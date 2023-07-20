@@ -42,10 +42,10 @@
                 {
                     <td><input type="submit" value="Forgot Password" /></td>
                 }
-                @*using (Html.BeginForm("AnalyzeEntry", "Home", FormMethod.Get))
-                    {*@
-                <td><input type="submit" value="Create Login" /></td>
-                <!--}-->
+                @using (Html.BeginForm("CreateLogin", "Entry", FormMethod.Get))
+                {
+                    <td><input type="submit" value="Create Login" /></td>
+                }
             </tr>
         </table>
 

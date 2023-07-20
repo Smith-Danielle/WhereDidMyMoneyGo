@@ -14,13 +14,18 @@ namespace WhereDidMyMoneyGo.Models
             _connection = connection;
         }
 
-        //Login Actions
-
-        //Check input username to see if it exists, if so pull that entire record
+        //Get record based on inputted username
         public IEnumerable<UsersTable> GetUserName(string userName)
         {
             return _connection.Query<UsersTable>("Select * From Users Where UserName = @userName",
                    new { userName = userName });
+        }
+
+        //Insert new record
+        public void InsertNewUser(string userName, string password, double balance, string first, string last, string secureAns)
+        {
+            _connection.Execute("Insert Into Users (Username, Password, Balance, FirstName, LastName, SecurityAnswer) Values (@userName, @password, @balance, @first, @last, @secureAns);",
+            new { userName = userName, password = password, balance = balance, first = first, last = last, secureAns = secureAns });
         }
     }
 }

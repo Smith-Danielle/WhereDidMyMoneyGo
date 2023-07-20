@@ -47,5 +47,25 @@ namespace WhereDidMyMoneyGo.Controllers
             forgotUser.GetPassword(forgotUser.UserName, forgotUser.SecurityAnswer);
             return View("ForgotPassword", forgotUser);
         }
+
+        //Create Login Button from Entry Page
+        public ActionResult CreateLogin()
+        {
+            return View();
+        }
+
+        //Submit Button from Create Login Page
+        public ActionResult FormCreateLogin(UsersModel createUser)
+        {
+            createUser.CreateNewUser(createUser.UserName, createUser.Password, createUser.Balance, createUser.FirstName, createUser.LastName, createUser.SecurityAnswer);
+            if (createUser.Message == "Created.")
+            {
+                return RedirectToAction("EntryIndex", "Entry");
+            }
+            else
+            {
+                return View("CreateLogin", createUser);
+            }
+        }
     }
 }

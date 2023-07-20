@@ -30,9 +30,10 @@ namespace WhereDidMyMoneyGo.Models
         public string LastName { get; set; }
         public string Password { get; set; }
         public string SecurityAnswer { get; set; }
-        public double Balance { get; set; }
+        public string Balance { get; set; } //In database this is a double. Will start out as string here, then validate user input, and convert before sending to database
         public string Message { get; set; }
 
+        //Check if user exist, if so check password.
         public void Login(string userName, string password)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password))
@@ -60,6 +61,7 @@ namespace WhereDidMyMoneyGo.Models
             }
         }
 
+        //Check if user exist, if so check security answer.
         public void GetPassword(string userName, string secureAns)
         {
             if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(secureAns))
@@ -83,6 +85,45 @@ namespace WhereDidMyMoneyGo.Models
                 else
                 {
                     Message = "Username does not exist.";
+                }
+            }
+        }
+
+        //Check if user exist, if not check password rules, if good create user.
+        public void CreateNewUser(string userName, string password, string balance, string first, string last, string secureAns)
+        {
+            if (string.IsNullOrEmpty(userName) || string.IsNullOrEmpty(password) || string.IsNullOrEmpty(balance) || string.IsNullOrEmpty(first) || string.IsNullOrEmpty(last) || string.IsNullOrEmpty(secureAns))
+            {
+                Message = "All fields must be filled in to Submit.";
+            }
+            else
+            {
+                var userInfo = RepoUser.GetUserName(userName);
+                if (userInfo.Select(x => x.UserName).Any())
+                {
+                    Message = "Username already exists.";
+                }
+                else
+                {
+                    if (password.Length >= 10 &&
+                        password.Where(x => char.IsLetter(x)).Where(x => char.IsUpper(x)).Count() >= 1 &&
+                        password.Where(x => char.IsNumber(x)).Count() >= 1)
+                    {
+                        var trimBalance = balance.Where(x => char.IsNumber(x) || x == '.');
+                        if (trimBalance.Any() && trimBalance.Where(x => x == '.').Count() <= 1 && string.Join("",trimBalance) == balance && Convert.ToDouble(balance) != 0)
+                        {
+                            RepoUser.InsertNewUser(userName, password, Convert.ToDouble(balance), first, last, secureAns);
+                            Message = "Created.";
+                        }
+                        else
+                        {
+                            Message = "Balance does not meet requirements.";
+                        }
+                    }
+                    else
+                    {
+                        Message = "Password does not meet requirements.";
+                    }
                 }
             }
         }
