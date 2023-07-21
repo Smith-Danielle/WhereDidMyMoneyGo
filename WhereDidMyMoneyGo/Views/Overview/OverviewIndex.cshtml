@@ -1,0 +1,35 @@
+﻿@*
+    For more information on enabling MVC for empty projects, visit https://go.microsoft.com/fwlink/?LinkID=397860
+*@
+@model OverviewViewModel
+
+<h1>Welcome @Model.OverUsersModel.FirstName</h1>
+
+<h4>Balance @Model.OverUsersModel.Balance</h4>
+
+<h6>Latest Transactions</h6>
+
+<table cellpadding="0" cellspacing="0">
+    <tr>
+        <th>Date</th>
+        <th>Vendor</th>
+        <th>Category</th>
+        <th>Type</th>
+        <th>Amount</th>
+    </tr>
+    @{
+        if (Model.OverTransactionModel.TopTenTransactions.Any())
+        {
+            foreach (var item in Model.OverTransactionModel.TopTenTransactions)
+                {
+                    <tr>
+                        <td>@item.TransactionDate</td>
+                        <td>@item.VendorId</td>
+                        <td>@item.CategoryId</td>
+                        <td>@item.CategoryId</td> <!--TYPE GOES HERE-->
+                        <td>@item.TransactionAmount</td>
+                    </tr>
+                }
+        }
+    }
+</table>

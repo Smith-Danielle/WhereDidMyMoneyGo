@@ -8,14 +8,12 @@ namespace WhereDidMyMoneyGo.Controllers
     {
         public EntryController()
         {
-            UsersModel userModel = new UsersModel();
-            user = userModel;
         }
-        public UsersModel user { get; set; }
 
         public IActionResult EntryIndex()
         {
             //user is instatiated to create a clean user model for the view. view needs this up fron because it references model before values are assigned
+            UsersModel user = new UsersModel();
             return View(user);
         }
 
@@ -25,9 +23,7 @@ namespace WhereDidMyMoneyGo.Controllers
             formUser.Login(formUser.UserName, formUser.Password);
             if (formUser.Message == "Welcome.")
             {
-                //return View();
-                //User Home Page View will go here
-                return RedirectToAction("EntryIndex", "Entry");
+                return RedirectToAction("OverviewIndex", "Overview", formUser);
             }
             else
             {

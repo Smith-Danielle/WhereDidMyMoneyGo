@@ -17,8 +17,12 @@
     <None Remove="Dapper" />
     <None Remove="Microsoft.Extensions.Configuration.Json" />
     <None Remove="MySql.Data" />
+    <None Remove="Views\Overview\" />
+    <None Remove="ViewModels\" />
   </ItemGroup>
   <ItemGroup>
     <Folder Include="Views\Entry\" />
+    <Folder Include="Views\Overview\" />
+    <Folder Include="ViewModels\" />
   </ItemGroup>
 </Project>

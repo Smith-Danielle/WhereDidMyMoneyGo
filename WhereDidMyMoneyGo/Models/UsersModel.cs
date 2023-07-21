@@ -43,11 +43,19 @@ namespace WhereDidMyMoneyGo.Models
             else
             {
                 var userInfo = RepoUser.GetUserName(userName);
-                if (userInfo.Select(x => x.UserName).Any())
+                if (userInfo.Any())
                 {
-                    if (userInfo.Select(x => x.Password).First() == password)
+                    if (userInfo.First().Password == password)
                     {
+                        UserId = userInfo.First().UserId;
+                        UserName = userInfo.First().UserName;
+                        FirstName = userInfo.First().FirstName;
+                        LastName = userInfo.First().LastName;
+                        Password = userInfo.First().Password;
+                        SecurityAnswer = userInfo.First().SecurityAnswer;
+                        Balance = userInfo.First().Balance.ToString();
                         Message = "Welcome.";
+
                     }
                     else
                     {
@@ -71,11 +79,11 @@ namespace WhereDidMyMoneyGo.Models
             else
             {
                 var userInfo = RepoUser.GetUserName(userName);
-                if (userInfo.Select(x => x.UserName).Any())
+                if (userInfo.Any())
                 {
-                    if (userInfo.Select(x => x.SecurityAnswer).First().ToLower() == secureAns.ToLower())
+                    if (userInfo.First().SecurityAnswer.ToLower() == secureAns.ToLower())
                     {
-                        Message = $"Your password: {userInfo.Select(x => x.Password).First()}";
+                        Message = $"Your password: {userInfo.First().Password}";
                     }
                     else
                     {
@@ -99,7 +107,7 @@ namespace WhereDidMyMoneyGo.Models
             else
             {
                 var userInfo = RepoUser.GetUserName(userName);
-                if (userInfo.Select(x => x.UserName).Any())
+                if (userInfo.Any())
                 {
                     Message = "Username already exists.";
                 }
@@ -107,6 +115,7 @@ namespace WhereDidMyMoneyGo.Models
                 {
                     if (password.Length >= 10 &&
                         password.Where(x => char.IsLetter(x)).Where(x => char.IsUpper(x)).Count() >= 1 &&
+                        password.Where(x => char.IsLetter(x)).Where(x => char.IsLower(x)).Count() >= 1 &&
                         password.Where(x => char.IsNumber(x)).Count() >= 1)
                     {
                         var trimBalance = balance.Where(x => char.IsNumber(x) || x == '.');

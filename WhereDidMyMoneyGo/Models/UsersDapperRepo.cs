@@ -17,7 +17,7 @@ namespace WhereDidMyMoneyGo.Models
         //Get record based on inputted username
         public IEnumerable<UsersTable> GetUserName(string userName)
         {
-            return _connection.Query<UsersTable>("Select * From Users Where UserName = @userName",
+            return _connection.Query<UsersTable>("Select * From Users Where UserName = @userName;",
                    new { userName = userName });
         }
 

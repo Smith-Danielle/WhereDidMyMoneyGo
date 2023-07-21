@@ -1,9 +1,9 @@
 ﻿using System;
 namespace WhereDidMyMoneyGo.Models
 {
-    public class TransactionTable
+    public class TransactionsTable
     {
-        public TransactionTable()
+        public TransactionsTable()
         {
         }
 
