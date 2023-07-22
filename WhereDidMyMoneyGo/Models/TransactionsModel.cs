@@ -31,14 +31,17 @@ namespace WhereDidMyMoneyGo.Models
         public int VendorId { get; set; }
         public int CategoryId { get; set; }
         public int UserId { get; set; }
-        public IEnumerable<TransactionsTable> TopTenTransactions { get; set; }
+        public string VendorName { get; set; } //from Vendor table, join done in dapper repo, not needed for a transaction
+        public string CategoryName { get; set; } //from Category table, join done in dapper repo, not needed for a transaction
+        public string CategoryType { get; set; } //from Category table, join done in dapper repo, not needed for a transaction
+        public IEnumerable<TransactionsTable> TopFiveTransactions { get; set; }
 
 
         //List top 10 transactions
-        public void TopTrans()
+        public void TopTrans(int userId)
         {
-            var top = RepoTrans.GetTopTrans();
-            TopTenTransactions = top;
+            var top = RepoTrans.GetUserTrans(userId);
+            TopFiveTransactions = top.Count() > 5 ? top.Take(5) : top;
         }
     }
 }

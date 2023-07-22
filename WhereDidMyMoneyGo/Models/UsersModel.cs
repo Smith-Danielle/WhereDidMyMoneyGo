@@ -4,6 +4,7 @@ using System.IO;
 using Microsoft.Extensions.Configuration;
 using MySql.Data.MySqlClient;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace WhereDidMyMoneyGo.Models
 {
@@ -33,6 +34,12 @@ namespace WhereDidMyMoneyGo.Models
         public string Balance { get; set; } //In database this is a double. Will start out as string here, then validate user input, and convert before sending to database
         public string Message { get; set; }
 
+        //Get User
+        public IEnumerable<UsersTable> GetUser(string userName)
+        {
+            return RepoUser.GetUserName(userName);
+        }
+
         //Check if user exist, if so check password.
         public void Login(string userName, string password)
         {
@@ -42,18 +49,11 @@ namespace WhereDidMyMoneyGo.Models
             }
             else
             {
-                var userInfo = RepoUser.GetUserName(userName);
+                var userInfo = GetUser(userName);
                 if (userInfo.Any())
                 {
                     if (userInfo.First().Password == password)
                     {
-                        UserId = userInfo.First().UserId;
-                        UserName = userInfo.First().UserName;
-                        FirstName = userInfo.First().FirstName;
-                        LastName = userInfo.First().LastName;
-                        Password = userInfo.First().Password;
-                        SecurityAnswer = userInfo.First().SecurityAnswer;
-                        Balance = userInfo.First().Balance.ToString();
                         Message = "Welcome.";
 
                     }
@@ -78,7 +78,7 @@ namespace WhereDidMyMoneyGo.Models
             }
             else
             {
-                var userInfo = RepoUser.GetUserName(userName);
+                var userInfo = GetUser(userName);
                 if (userInfo.Any())
                 {
                     if (userInfo.First().SecurityAnswer.ToLower() == secureAns.ToLower())
@@ -106,7 +106,7 @@ namespace WhereDidMyMoneyGo.Models
             }
             else
             {
-                var userInfo = RepoUser.GetUserName(userName);
+                var userInfo = GetUser(userName);
                 if (userInfo.Any())
                 {
                     Message = "Username already exists.";
