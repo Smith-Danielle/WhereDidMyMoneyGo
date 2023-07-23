@@ -1,0 +1,58 @@
+﻿@*
+    Enter transactions and make adjustments to balance
+*@
+@model OverviewViewModel
+
+<div style="padding-top: 30px; padding-bottom: 30px">
+
+    <h2><u>Enter Transactions</u></h2>
+    <br />
+
+    @{
+        if (Model.OverUsersModel.Balance.Contains('-'))
+        {
+            if (Model.OverUsersModel.Balance.Contains('.'))
+            {
+                <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
+            }
+            else
+            {
+                <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1).00</h4>
+            }
+        }
+        else
+        {
+            if (Model.OverUsersModel.Balance.Contains('.'))
+            {
+                <h4>Balance: $@Model.OverUsersModel.Balance</h4>
+            }
+            else
+            {
+                <h4>Balance: $@Model.OverUsersModel.Balance.00</h4>
+            }
+        }
+    }
+    <br />
+    <br />
+    <br />
+    <br />
+
+
+    <div class="text-center" style="width: 350px; margin: 0 auto">
+        <table style="border: 1px solid; border-collapse: collapse;" cellpadding="20" cellspacing="0">
+            <tr>
+                @using (Html.BeginForm("EnterTrans", "Overview", FormMethod.Get))
+                {
+                    <td><input type="submit" value="Enter Transaction" /></td>
+                }
+                @using (Html.BeginForm("AdjustBalance", "Overview", FormMethod.Get))
+                {
+                    <td><input type="submit" value="Adjust Balance" /></td>
+                }
+            </tr>
+        </table>
+    </div>
+
+
+
+</div>

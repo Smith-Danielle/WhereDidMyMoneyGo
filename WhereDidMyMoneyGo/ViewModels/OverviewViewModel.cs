@@ -12,10 +12,8 @@ namespace WhereDidMyMoneyGo
 {
     public class OverviewViewModel
     {
-        public OverviewViewModel(UsersModel user, TransactionsModel trans)
+        public OverviewViewModel()
         {
-            OverUsersModel = user;
-            OverTransactionModel = trans;
         }
 
         public UsersModel OverUsersModel { get; set; }
