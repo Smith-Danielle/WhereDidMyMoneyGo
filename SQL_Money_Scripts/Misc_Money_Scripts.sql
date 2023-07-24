@@ -20,6 +20,15 @@ Where t.userid = 1
 Order By TransactionDate desc, VendorName, CategoryName, CategoryType, TransactionAmount;
 */
 
+-- Need Vendor in order to add User Adjustments
+-- insert into vendors (VendorName, UserId) values ('User Adjustment', 1);
+
+-- Gell all default vendors and vendors entered by user, exclude adjustment vendor id
+-- Select * From Vendors Where UserId In (1, 2) and VendorId != 5 Order By VendorName;
+
+-- Gell all default categories and categories entered by user, exclude adjustment category id
+-- Select * From Categories Where UserId In (1, 2) and CategoryId != 17 Order By CategoryType, CategoryName;
+
 select * from money.categories;
 select * from money.vendors;
 select * from money.transactions;

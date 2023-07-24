@@ -17,6 +17,8 @@ namespace WhereDidMyMoneyGo
         }
 
         public UsersModel OverUsersModel { get; set; }
-        public TransactionsModel OverTransactionModel { get; set; }
+        public TransactionsModel OverTransactionsModel { get; set; }
+        public VendorsModel OverVendorsModel { get; set; }
+        public CategoriesModel OverCategoriesModel { get; set; }
     }
 }

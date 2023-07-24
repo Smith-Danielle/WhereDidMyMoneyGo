@@ -5,7 +5,7 @@
 
 <div style="padding-top: 30px; padding-bottom: 30px">
 
-    <h2><u>Enter Transactions</u></h2>
+    <h2><u>Activity Entry</u></h2>
     <br />
 
     @{
@@ -43,6 +43,9 @@
             <tr>
                 @using (Html.BeginForm("EnterTrans", "Overview", FormMethod.Get))
                 {
+                    <td hidden><input type="hidden" name="userId" value="@Model.OverUsersModel.UserId" /></td>
+                    <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
+                    <td hidden><input type="hidden" name="balance" value="@Model.OverUsersModel.Balance" /></td>
                     <td><input type="submit" value="Enter Transaction" /></td>
                 }
                 @using (Html.BeginForm("AdjustBalance", "Overview", FormMethod.Get))

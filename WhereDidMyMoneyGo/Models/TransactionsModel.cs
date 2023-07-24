@@ -12,7 +12,7 @@ namespace WhereDidMyMoneyGo.Models
     {
         public TransactionsModel()
         {
-            //When this Model is call, create a database object to use for calling the database with UserDapperRepo actions
+            //When this Model is call, create a database object to use for calling the database with TransactionDapperRepo actions
             var config = new ConfigurationBuilder()
                     .SetBasePath(Directory.GetCurrentDirectory())
                     .AddJsonFile("appsettings.json")
@@ -37,7 +37,7 @@ namespace WhereDidMyMoneyGo.Models
         public IEnumerable<TransactionsTable> TopFiveTransactions { get; set; }
 
 
-        //List top 10 transactions
+        //List top 5 transactions
         public void TopTrans(int userId)
         {
             var top = RepoTrans.GetUserTrans(userId);

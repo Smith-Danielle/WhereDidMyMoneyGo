@@ -8,8 +8,8 @@ namespace WhereDidMyMoneyGo.Models
         }
 
         public int CategoryId { get; set; }
-        public int CategoryName { get; set; }
-        public int CategoryType { get; set; } //Enum in database. Values: Revenue, Expense, Adjustment 
+        public string CategoryName { get; set; }
+        public string CategoryType { get; set; } //Enum in database. Values: Revenue, Expense, Adjustment 
         public int UserId { get; set; }
     }
 }

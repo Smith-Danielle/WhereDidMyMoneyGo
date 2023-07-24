@@ -1,0 +1,74 @@
+﻿@*@*
+    Enter transaction
+*@
+@model OverviewViewModel
+
+<div style="padding-top: 30px; padding-bottom: 30px">
+
+    <h2><u>Activity Entry - Enter Transaction</u></h2>
+    <br />
+
+    @{
+        if (Model.OverUsersModel.Balance.Contains('-'))
+        {
+            if (Model.OverUsersModel.Balance.Contains('.'))
+            {
+                <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
+            }
+            else
+            {
+                <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1).00</h4>
+            }
+        }
+        else
+        {
+            if (Model.OverUsersModel.Balance.Contains('.'))
+            {
+                <h4>Balance: $@Model.OverUsersModel.Balance</h4>
+            }
+            else
+            {
+                <h4>Balance: $@Model.OverUsersModel.Balance.00</h4>
+            }
+        }
+    }
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <div class="text-center" style="width: 350px; margin: 0 auto">
+        @using (Html.BeginForm("EnterTrans", "Overview", FormMethod.Get))
+        {
+            <table style="border: 1px solid; border-collapse: separate; padding-top: 12px;" cellpadding="15" cellspacing="0">
+                <tr>
+                    <th>Vendor</th>
+                    <td>@Html.DropDownListFor(m => m.OverVendorsModel.AllVendors, Model.OverVendorsModel.AllVendors, new { style = "width:330px;" })</td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td>@Html.DropDownListFor(m => m.OverCategoriesModel.AllCategories, Model.OverCategoriesModel.AllCategories, new { style = "width:330px;" })</td>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <td id="result"></td>
+                </tr>
+                <tr>
+                    <th>Amount</th>
+                    <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionAmount, new { style = "width:330px;" })</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td style="padding-left: 280px;"><input type="submit" value="Submit" /></td>
+                </tr>
+            </table>
+        }
+    </div>
+
+
+
+</div>
+
+<script>
+    document.getElementById("result").innerHTML = "testing";
+</script>

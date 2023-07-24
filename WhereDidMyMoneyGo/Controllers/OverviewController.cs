@@ -25,7 +25,7 @@ namespace WhereDidMyMoneyGo.Controllers
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;
-            over.OverTransactionModel = trans;
+            over.OverTransactionsModel = trans;
 
             return View(over);
         }
@@ -45,12 +45,13 @@ namespace WhereDidMyMoneyGo.Controllers
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;
-            over.OverTransactionModel = trans;
+            over.OverTransactionsModel = trans;
 
             return View("OverviewIndex", over);
         }
 
-        public ActionResult EnterTransactions(string userName)
+        //Tab on Overview Page: Activity Entry
+        public ActionResult ActivityEntry(string userName)
         {
             UsersModel user = new UsersModel();
             var userInfo = user.GetUser(userName);
@@ -64,7 +65,31 @@ namespace WhereDidMyMoneyGo.Controllers
             return View(over);
         }
 
+        //Enter Transaction - Activity Entry Page
+        public ActionResult EnterTrans(int userId, string username, string balance)
+        {
+            UsersModel user = new UsersModel();
+            user.UserId = userId;
+            user.UserName = username;
+            user.Balance = balance;
 
+            TransactionsModel trans = new TransactionsModel();
+
+            VendorsModel vendor = new VendorsModel();
+            vendor.GetAllVendors(userId);
+
+            CategoriesModel cat = new CategoriesModel();
+            cat.GetAllCategories(userId);
+
+            OverviewViewModel over = new OverviewViewModel();
+            over.OverUsersModel = user;
+            over.OverTransactionsModel = trans;
+            over.OverVendorsModel = vendor;
+            over.OverCategoriesModel = cat;
+
+            return View(over); 
+
+        }
 
 
 

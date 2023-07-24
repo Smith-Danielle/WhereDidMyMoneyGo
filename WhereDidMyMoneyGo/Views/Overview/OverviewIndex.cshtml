@@ -48,9 +48,9 @@
                 <th style="width:20%">Amount</th>
             </tr>
             @{
-                if (Model.OverTransactionModel.TopFiveTransactions.Any())
+                if (Model.OverTransactionsModel.TopFiveTransactions.Any())
                 {
-                    foreach (var item in Model.OverTransactionModel.TopFiveTransactions)
+                    foreach (var item in Model.OverTransactionsModel.TopFiveTransactions)
                     {
                         <tr>
                             <td>@item.TransactionDate.Substring(0, 10)</td>
