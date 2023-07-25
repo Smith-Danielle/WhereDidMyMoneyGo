@@ -30,12 +30,18 @@ namespace WhereDidMyMoneyGo.Models
         public string VendorName { get; set; }
         public int UserId { get; set; }
         public IEnumerable<SelectListItem> AllVendors { get; set; }
+        public string DropDownVenOption { get; set; } //Vendor option selected from view, this will also determine if the vendor chosen is new
 
         //List all default Vendors and Vendors entered by user
         public void GetAllVendors(int userId)
         {
             var vendors = RepoVen.GetDefaultAndUserVendors(userId);
-            AllVendors = vendors.Select(x => new SelectListItem() { Text = x.VendorName.ToString(), Value = x.UserId.ToString() });
+            VendorsTable blank = new VendorsTable() { VendorName = "" }; //This is for View to have an empty option
+            VendorsTable addNew = new VendorsTable() { VendorName = "*ADD NEW VENDOR*" }; //This is for View to have option to add new vendor
+            var listVendors = vendors.ToList();
+            listVendors.Insert(0, blank);
+            listVendors.Insert(1, addNew);
+            AllVendors = listVendors.Select(x => new SelectListItem() { Text = x.VendorName.ToString(), Value = x.VendorName.ToString() });
         }
     }
 }

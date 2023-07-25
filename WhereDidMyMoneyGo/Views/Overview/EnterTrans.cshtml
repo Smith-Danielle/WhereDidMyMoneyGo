@@ -40,28 +40,36 @@
     <div class="text-center" style="width: 350px; margin: 0 auto">
         @using (Html.BeginForm("EnterTrans", "Overview", FormMethod.Get))
         {
-            <table style="border: 1px solid; border-collapse: separate; padding-top: 12px;" cellpadding="15" cellspacing="0">
-                <tr>
-                    <th>Vendor</th>
-                    <td>@Html.DropDownListFor(m => m.OverVendorsModel.AllVendors, Model.OverVendorsModel.AllVendors, new { style = "width:330px;" })</td>
-                </tr>
-                <tr>
-                    <th>Category</th>
-                    <td>@Html.DropDownListFor(m => m.OverCategoriesModel.AllCategories, Model.OverCategoriesModel.AllCategories, new { style = "width:330px;" })</td>
-                </tr>
-                <tr>
-                    <th>Type</th>
-                    <td id="result"></td>
-                </tr>
-                <tr>
-                    <th>Amount</th>
-                    <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionAmount, new { style = "width:330px;" })</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td style="padding-left: 280px;"><input type="submit" value="Submit" /></td>
-                </tr>
-            </table>
+        <table style="border: 1px solid; border-collapse: separate; padding-top: 12px;" cellpadding="15" cellspacing="0">
+            <tr>
+                <th>Vendor</th>
+                <td>@Html.DropDownListFor(m => m.OverVendorsModel.DropDownVenOption, Model.OverVendorsModel.AllVendors, new { style = "width:330px;", onchange = "getVendor()" })</td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <td>@Html.TextBoxFor(m => m.OverVendorsModel.VendorName, new { style = "width:330px;", @readonly = true })</td>
+            </tr>
+            <tr>
+                <th>Category</th>
+                <td>@Html.DropDownListFor(m => m.OverCategoriesModel.DropDownCatOption, Model.OverCategoriesModel.AllCategories, new { style = "width:330px;", onchange = "getCategory()" })</td>
+            </tr>
+            <tr>
+                <th>&nbsp;</th>
+                <td>@Html.TextBoxFor(m => m.OverCategoriesModel.CategoryName, new { style = "width:330px;", @readonly = true })</td>
+            </tr>
+            <tr>
+                <th>Type</th>
+                <td>@Html.DropDownListFor(m => m.OverTransactionsModel.TransactionType, Model.OverTransactionsModel.TransTypeOptions, new { style = "width:330px;" })</td>
+            </tr>
+            <tr>
+                <th>Amount</th>
+                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionAmount, new { style = "width:330px;" })</td>
+            </tr>
+            <tr>
+                <td>&nbsp;</td>
+                <td style="padding-left: 280px;"><input type="submit" value="Submit" /></td>
+            </tr>
+        </table>
         }
     </div>
 
@@ -69,6 +77,42 @@
 
 </div>
 
-<script>
-    document.getElementById("result").innerHTML = "testing";
+<script type="text/javascript">
+
+    function getVendor() {
+        var id = '@Html.IdFor(x => x.OverVendorsModel.DropDownVenOption)';
+        var dropdown = document.getElementById(id);
+        var value = dropdown.options[dropdown.selectedIndex].value;
+
+        var idText = '@Html.IdFor(x => x.OverVendorsModel.VendorName)';
+        var textbox = document.getElementById(idText);
+        if (value == "*ADD NEW VENDOR*") {
+
+            textbox.removeAttribute('readonly');
+            document.getElementById(idText).value = "";
+        }
+        else {
+            textbox.setAttribute("readonly", "readonly");
+            document.getElementById(idText).value = value;
+        }
+    }
+
+    function getCategory() {
+        var id = '@Html.IdFor(x => x.OverCategoriesModel.DropDownCatOption)';
+        var dropdown = document.getElementById(id);
+        var value = dropdown.options[dropdown.selectedIndex].value;
+
+        var idText = '@Html.IdFor(x => x.OverCategoriesModel.CategoryName)';
+        var textbox = document.getElementById(idText);
+        if (value == "*ADD NEW CATEGORY*") {
+
+            textbox.removeAttribute('readonly');
+            document.getElementById(idText).value = "";
+        }
+        else {
+            textbox.setAttribute("readonly", "readonly");
+            document.getElementById(idText).value = value;
+        }
+    }
+
 </script>

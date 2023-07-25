@@ -98,7 +98,7 @@ namespace WhereDidMyMoneyGo.Controllers
 
 
 
-
+        //Tab on Overview Page: Activity Entry, back to Login Page
         public ActionResult Logout()
         {
             return RedirectToAction("EntryIndex", "Entry");

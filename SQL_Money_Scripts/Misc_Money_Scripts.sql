@@ -12,12 +12,12 @@
 
 -- Select statement for getting transactions in database. Joins to get the actual name vs ids.
 /*
-Select t.transactiondate as TransactionDate, v.vendorname as VendorName, c.categoryname as CategoryName, c.categorytype as CategoryType, t.transactionamount as TransactionAmount 
+Select t.transactiondate as TransactionDate, v.vendorname as VendorName, c.categoryname as CategoryName, t.transactiontype as TranasctionType, t.transactionamount as TransactionAmount 
 From transactions as t
 Inner Join vendors as v on t.vendorid = v.vendorid 
 Inner Join categories as c on t.categoryid = c.categoryid
 Where t.userid = 1
-Order By TransactionDate desc, VendorName, CategoryName, CategoryType, TransactionAmount;
+Order By TransactionDate desc, VendorName, CategoryName, TranasctionType, TransactionAmount;
 */
 
 -- Need Vendor in order to add User Adjustments
@@ -28,6 +28,13 @@ Order By TransactionDate desc, VendorName, CategoryName, CategoryType, Transacti
 
 -- Gell all default categories and categories entered by user, exclude adjustment category id
 -- Select * From Categories Where UserId In (1, 2) and CategoryId != 17 Order By CategoryType, CategoryName;
+
+-- Update TransactionType after table modifications
+/*
+update transactions set Transactiontype = 'Expense' where transactionid = 1;
+update transactions set Transactiontype = 'Expense' where transactionid = 2;
+update transactions set Transactiontype = 'Expense' where transactionid = 3;
+*/
 
 select * from money.categories;
 select * from money.vendors;

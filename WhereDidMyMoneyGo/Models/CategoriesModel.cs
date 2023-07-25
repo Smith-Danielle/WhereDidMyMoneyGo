@@ -27,16 +27,21 @@ namespace WhereDidMyMoneyGo.Models
 
         public CategoriesDapperRepo RepoCat { get; set; }
         public int CategoryId { get; set; }
-        public int CategoryName { get; set; }
-        public int CategoryType { get; set; } //Enum in database. Values: Revenue, Expense, Adjustment 
+        public string CategoryName { get; set; }
         public int UserId { get; set; }
         public IEnumerable<SelectListItem> AllCategories { get; set; }
+        public string DropDownCatOption { get; set; } //Category option selected from view, this will also determine if the category chosen is new
 
         //List all default Vendors and Vendors entered by user
         public void GetAllCategories(int userId)
         {
             var categories = RepoCat.GetDefaultAndUserCats(userId);
-            AllCategories = categories.Select(x => new SelectListItem() { Text = x.CategoryName.ToString(), Value = x.CategoryId.ToString() });
+            CategoriesTable blank = new CategoriesTable() { CategoryName = "" }; //This is for View to have an empty option
+            CategoriesTable addNew = new CategoriesTable() { CategoryName = "*ADD NEW CATEGORY*" }; //This is for View to have option to add new category
+            var listCategories = categories.ToList();
+            listCategories.Insert(0, blank);
+            listCategories.Insert(1, addNew);
+            AllCategories = listCategories.Select(x => new SelectListItem() { Text = x.CategoryName.ToString(), Value = x.CategoryName.ToString() });
         }
     }
 }

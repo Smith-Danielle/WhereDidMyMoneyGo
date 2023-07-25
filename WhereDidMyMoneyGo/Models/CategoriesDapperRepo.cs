@@ -18,7 +18,7 @@ namespace WhereDidMyMoneyGo.Models
         public IEnumerable<CategoriesTable> GetDefaultAndUserCats(int userId)
         {
             //Orders user's input then default by vendorname
-            return _connection.Query<CategoriesTable>("Select * From Categories Where UserId In (1, @userId) and CategoryId != 17 Order By CategoryType, CategoryName;",
+            return _connection.Query<CategoriesTable>("Select * From Categories Where UserId In (1, @userId) and CategoryId != 17 Order By CategoryName;",
                    new { userId = userId });
         }
     }

@@ -56,10 +56,10 @@
                             <td>@item.TransactionDate.Substring(0, 10)</td>
                             <td>@item.VendorName</td>
                             <td>@item.CategoryName</td>
-                            <td>@item.CategoryType</td>
+                            <td>@item.TransactionType</td>
                             @if (item.TransactionAmount.ToString().Contains('.'))
                             {
-                                @if (item.CategoryType == "Expense")
+                                @if (item.TransactionType == "Expense")
                                 {
                                     <td>-$@item.TransactionAmount</td>
                                 }
@@ -70,7 +70,7 @@
                             }
                             else
                             {
-                                @if (item.CategoryType == "Expense")
+                                @if (item.TransactionType == "Expense")
                                 {
                                     <td>-$@item.TransactionAmount.00</td>
                                 }
