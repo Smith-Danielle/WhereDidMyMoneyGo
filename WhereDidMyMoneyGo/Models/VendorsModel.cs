@@ -30,7 +30,7 @@ namespace WhereDidMyMoneyGo.Models
         public string VendorName { get; set; }
         public int UserId { get; set; }
         public IEnumerable<SelectListItem> AllVendors { get; set; }
-        public string DropDownVenOption { get; set; } //Vendor option selected from view, this will also determine if the vendor chosen is new
+        public IEnumerable<SelectListItem> DropDownVenOption { get; set; } //Vendor option selected from view, this will also determine if the vendor chosen is new
 
         //List all default Vendors and Vendors entered by user
         public void GetAllVendors(int userId)

@@ -3,7 +3,7 @@
 *@
 @model OverviewViewModel
 
-<div style="padding-top: 30px; padding-bottom: 30px">
+<div style="padding-top: 30px; padding-bottom: 40px">
 
     <h2><u>Activity Entry - Enter Transaction</u></h2>
     <br />
@@ -37,40 +37,71 @@
     <br />
     <br />
 
-    <div class="text-center" style="width: 350px; margin: 0 auto">
-        @using (Html.BeginForm("EnterTrans", "Overview", FormMethod.Get))
+    <div class="text-center" style="border-style:double; width: 605px; margin: 0 auto">
+
+        @using (Html.BeginForm("FormEnterTrans", "Overview", FormMethod.Get))
         {
-        <table style="border: 1px solid; border-collapse: separate; padding-top: 12px;" cellpadding="15" cellspacing="0">
-            <tr>
-                <th>Vendor</th>
-                <td>@Html.DropDownListFor(m => m.OverVendorsModel.DropDownVenOption, Model.OverVendorsModel.AllVendors, new { style = "width:330px;", onchange = "getVendor()" })</td>
-            </tr>
-            <tr>
-                <th>&nbsp;</th>
-                <td>@Html.TextBoxFor(m => m.OverVendorsModel.VendorName, new { style = "width:330px;", @readonly = true })</td>
-            </tr>
-            <tr>
-                <th>Category</th>
-                <td>@Html.DropDownListFor(m => m.OverCategoriesModel.DropDownCatOption, Model.OverCategoriesModel.AllCategories, new { style = "width:330px;", onchange = "getCategory()" })</td>
-            </tr>
-            <tr>
-                <th>&nbsp;</th>
-                <td>@Html.TextBoxFor(m => m.OverCategoriesModel.CategoryName, new { style = "width:330px;", @readonly = true })</td>
-            </tr>
-            <tr>
-                <th>Type</th>
-                <td>@Html.DropDownListFor(m => m.OverTransactionsModel.TransactionType, Model.OverTransactionsModel.TransTypeOptions, new { style = "width:330px;" })</td>
-            </tr>
-            <tr>
-                <th>Amount</th>
-                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionAmount, new { style = "width:330px;" })</td>
-            </tr>
-            <tr>
-                <td>&nbsp;</td>
-                <td style="padding-left: 280px;"><input type="submit" value="Submit" /></td>
-            </tr>
-        </table>
+            @Html.HiddenFor(m => m.OverUsersModel.UserId);
+            @Html.HiddenFor(m => m.OverUsersModel.UserName);
+            @Html.HiddenFor(m => m.OverUsersModel.Balance);
+            @Html.HiddenFor(m => m.OverVendorsModel.AllVendors);
+            @Html.HiddenFor(m => m.OverCategoriesModel.AllCategories);
+            <table style="border-collapse: separate; padding-top: 12px; text-align:center;" cellpadding="15" cellspacing="0">
+                <tr>
+                    <th>Date</th>
+                    <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionDate, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd") })</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>Amount</th>
+                    <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionAmount, new { style = "width:230px;" })</td>
+                    <td>&nbsp;</td>
+                </tr>
+                <tr>
+                    <th>Type</th>
+                    <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionType, new { style = "width:230px;", @readonly = true })</td>
+                    <td>@Html.DropDownListFor(m => m.OverTransactionsModel.DropDownTypeSelection, Model.OverTransactionsModel.TransTypeOptions, new { style = "width:200px;", onchange = "getType()" })</td>
+                </tr>
+                <tr>
+                    <th>Vendor</th>
+                    <td>@Html.TextBoxFor(m => m.OverVendorsModel.VendorName, new { style = "width:230px;", @readonly = true })</td>
+                    <td>@Html.DropDownListFor(m => m.OverVendorsModel.DropDownVenOption, Model.OverVendorsModel.AllVendors, new { style = "width:200px;", onchange = "getVendor()" })</td>
+                </tr>
+                <tr>
+                    <th>Category</th>
+                    <td>@Html.TextBoxFor(m => m.OverCategoriesModel.CategoryName, new { style = "width:230px;", @readonly = true })</td>
+                    <td>@Html.DropDownListFor(m => m.OverCategoriesModel.DropDownCatOption, Model.OverCategoriesModel.AllCategories, new { style = "width:200px;", onchange = "getCategory()" })</td>
+                </tr>
+                <tr>
+                    <td>&nbsp;</td>
+                    <td>&nbsp;</td>
+                    <td style="padding-left: 150px;"><input type="submit" value="Submit" /></td>
+                </tr>
+            </table>
         }
+        <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="15" cellspacing="0">
+            @{
+                if (Model.Messages.Count > 0)
+                {
+                    foreach (var item in Model.Messages)
+                    {
+                        <tr readonly>
+                            <td>@item</td>
+                        </tr>
+                    }
+                }
+            }
+        </table>
+        @using (Html.BeginForm("ActivityEntry", "Overview", FormMethod.Get))
+        {
+            <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
+                <tr>
+                    <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
+                    <td><input type="submit" value="Back to Activity Entry" /></td>
+                </tr>
+            </table>
+        }
+
     </div>
 
 
@@ -113,6 +144,16 @@
             textbox.setAttribute("readonly", "readonly");
             document.getElementById(idText).value = value;
         }
+    }
+
+    function getType() {
+        var id = '@Html.IdFor(x => x.OverTransactionsModel.DropDownTypeSelection)';
+        var dropdown = document.getElementById(id);
+        var value = dropdown.options[dropdown.selectedIndex].value;
+
+        var idText = '@Html.IdFor(x => x.OverTransactionsModel.TransactionType)';
+
+        document.getElementById(idText).value = value;
     }
 
 </script>

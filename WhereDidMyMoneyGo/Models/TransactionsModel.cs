@@ -30,7 +30,7 @@ namespace WhereDidMyMoneyGo.Models
 
         public TransactionsDapperRepo RepoTrans { get; set; }
         public int TransactionId { get; set; }
-        public string TransactionDate { get; set; } //Before sending to repo, TransactionDate.ToString("yyyy-MM-dd");
+        public DateTime TransactionDate { get; set; } //Before sending to repo, TransactionDate.ToString("yyyy-MM-dd");
         public string TransactionType { get; set; } //Enum in database. Values: Revenue, Expense, Adjustment 
         public string TransactionAmount { get; set; } //In database this is a double. Will start out as string here, then validate user input, and convert before sending to database
         public int VendorId { get; set; }
@@ -40,6 +40,7 @@ namespace WhereDidMyMoneyGo.Models
         public string CategoryName { get; set; } //from Category table, join done in dapper repo, not needed for a transaction
         public IEnumerable<TransactionsTable> TopFiveTransactions { get; set; }
         public IEnumerable<SelectListItem> TransTypeOptions { get; set; }
+        public string DropDownTypeSelection { get; set; } //Vendor option selected from view, will be assigned to final Transaction type
 
 
         //List top 5 transactions

@@ -30,7 +30,7 @@ namespace WhereDidMyMoneyGo.Models
         public string CategoryName { get; set; }
         public int UserId { get; set; }
         public IEnumerable<SelectListItem> AllCategories { get; set; }
-        public string DropDownCatOption { get; set; } //Category option selected from view, this will also determine if the category chosen is new
+        public IEnumerable<SelectListItem> DropDownCatOption { get; set; } //Category option selected from view, this will also determine if the category chosen is new
 
         //List all default Vendors and Vendors entered by user
         public void GetAllCategories(int userId)

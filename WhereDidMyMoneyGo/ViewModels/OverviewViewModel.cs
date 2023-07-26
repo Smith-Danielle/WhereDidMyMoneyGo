@@ -20,5 +20,7 @@ namespace WhereDidMyMoneyGo
         public TransactionsModel OverTransactionsModel { get; set; }
         public VendorsModel OverVendorsModel { get; set; }
         public CategoriesModel OverCategoriesModel { get; set; }
+
+        public List<string> Messages { get; set; }
     }
 }

@@ -2,6 +2,7 @@
 using Microsoft.AspNetCore.Mvc;
 using WhereDidMyMoneyGo.Models;
 using System.Linq;
+using System.Collections.Generic;
 
 namespace WhereDidMyMoneyGo.Controllers
 {
@@ -66,7 +67,7 @@ namespace WhereDidMyMoneyGo.Controllers
         }
 
         //Enter Transaction - Activity Entry Page
-        public ActionResult EnterTrans(int userId, string username, string balance)
+        public ActionResult EnterTrans(int userId, string username, string balance, List<string> messages = null)
         {
             UsersModel user = new UsersModel();
             user.UserId = userId;
@@ -86,18 +87,83 @@ namespace WhereDidMyMoneyGo.Controllers
             over.OverTransactionsModel = trans;
             over.OverVendorsModel = vendor;
             over.OverCategoriesModel = cat;
+            if (messages != null)
+            {
+                over.Messages = messages;
+            }
+            else
+            {
+                over.Messages = new List<string>() { "" };
+            }
 
             return View(over); 
+        }
+        
+        //Submit on Enter Transaction Page
+        public ActionResult FormEnterTrans(OverviewViewModel overview)
+        {
+            bool addVendor = false;
+            bool addCategory = false;
+            overview.Messages = new List<string>();
+
+            if (string.IsNullOrEmpty(overview.OverVendorsModel.VendorName) || string.IsNullOrEmpty(overview.OverCategoriesModel.CategoryName) || string.IsNullOrEmpty(overview.OverTransactionsModel.TransactionType) || string.IsNullOrEmpty(overview.OverTransactionsModel.TransactionAmount) || overview.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd") == "0001-01-01")
+            {
+                overview.Messages.Add("All fields must be filled in to Submit.");
+                return View("EnterTrans", overview);
+            }
+
+            var trimBalance = overview.OverTransactionsModel.TransactionAmount.Where(x => char.IsNumber(x) || x == '.');
+            if (trimBalance.Count() != overview.OverTransactionsModel.TransactionAmount.Length || trimBalance.Where(x => x == '.').Count() > 1 || Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount) == 0)
+            {
+                overview.Messages.Add("Amount must be a non-negative numerical value. Larger than zero.");
+                return View("EnterTrans", overview);
+            }
+
+            if (overview.OverVendorsModel.DropDownVenOption.Where(x => x.Text == "*ADD NEW VENDOR*").Count() > 1)
+            {
+                if (overview.OverVendorsModel.AllVendors.Select(x => x.Text.ToLower()).Contains(overview.OverVendorsModel.VendorName.ToLower()))
+                {
+                    overview.Messages.Add("Vendor already exists. Please select vendor from dropdown list or add new vendor.");
+                    return View("EnterTrans", overview);
+                }
+                addVendor = true;
+            }
+
+            if (overview.OverCategoriesModel.DropDownCatOption.Where(x => x.Text == "*ADD NEW CATEGORY*").Count() > 1)
+            {
+                if (overview.OverCategoriesModel.AllCategories.Select(x => x.Text.ToLower()).Contains(overview.OverCategoriesModel.CategoryName.ToLower()))
+                {
+                    overview.Messages.Add("Category already exists. Please select category from dropdown list or add new category.");
+                    return View("EnterTrans", overview);
+                }
+                addCategory = true;
+            }
+
+            //Proceed with database tranasctions after checks above
+
+            if (addVendor)
+            {
+                //call method to add vendor
+                overview.Messages.Add($"Vendor: {overview.OverVendorsModel.VendorName} has been added.");
+            }
+
+            if (addCategory)
+            {
+                //call method to add category
+                overview.Messages.Add($"Category: {overview.OverCategoriesModel.CategoryName} has been added.");
+            }
+
+            //call method to add transaction
+            //add transaction successful message with details
+
+            //call method to update user balance
+
+            
+            return RedirectToAction("EnterTrans", "Overview", new { userId = overview.OverUsersModel.UserId, username = overview.OverUsersModel.UserName, balance = overview.OverUsersModel.Balance, messages = overview.Messages });
 
         }
-
-
-
-
-
-
-
-
+        
+        
         //Tab on Overview Page: Activity Entry, back to Login Page
         public ActionResult Logout()
         {
