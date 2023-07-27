@@ -21,5 +21,12 @@ namespace WhereDidMyMoneyGo.Models
             return _connection.Query<CategoriesTable>("Select * From Categories Where UserId In (1, @userId) and CategoryId != 17 Order By CategoryName;",
                    new { userId = userId });
         }
+
+        //Insert new record
+        public void InsertNewCategory(int userId, string categoryName)
+        {
+            _connection.Execute("Insert Into Categories (UserId, CategoryName) Values (@userId, @categoryName);",
+            new { userId = userId, categoryName = categoryName });
+        }
     }
 }

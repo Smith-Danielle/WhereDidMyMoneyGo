@@ -136,5 +136,19 @@ namespace WhereDidMyMoneyGo.Models
                 }
             }
         }
+
+        //Update User Balance after Transaction
+        public void UpdateBalanceTrans(int userId, double balance, double transAmount, string transType)
+        {
+            if (transType == "Revenue")
+            {
+                Balance = Convert.ToString(balance + transAmount);
+            }
+            else
+            {
+                Balance = Convert.ToString(balance - transAmount);
+            }
+            RepoUser.UpdateBalance(userId, Convert.ToDouble(Balance));
+        }
     }
 }

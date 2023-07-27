@@ -20,5 +20,14 @@ namespace WhereDidMyMoneyGo.Models
             return _connection.Query<VendorsTable>("Select * From Vendors Where UserId In (1, @userId) and VendorId != 5 Order By VendorName;",
                    new { userId = userId });
         }
+
+        //Insert new record
+        public void InsertNewVendor(int userId, string vendorName)
+        {
+            _connection.Execute("Insert Into Vendors (UserId, VendorName) Values (@userId, @vendorName);",
+            new { userId = userId, vendorName = vendorName });
+        }
+
+        
     }
 }

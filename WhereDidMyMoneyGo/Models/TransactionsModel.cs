@@ -38,8 +38,8 @@ namespace WhereDidMyMoneyGo.Models
         public int UserId { get; set; }
         public string VendorName { get; set; } //from Vendor table, join done in dapper repo, not needed for a transaction
         public string CategoryName { get; set; } //from Category table, join done in dapper repo, not needed for a transaction
-        public IEnumerable<TransactionsTable> TopFiveTransactions { get; set; }
-        public IEnumerable<SelectListItem> TransTypeOptions { get; set; }
+        public IEnumerable<TransactionsTable> TopFiveTransactions { get; set; } //for overview home page
+        public IEnumerable<SelectListItem> TransTypeOptions { get; set; } //Formatted for dropdown on view, trans entry
         public string DropDownTypeSelection { get; set; } //Vendor option selected from view, will be assigned to final Transaction type
 
 
@@ -48,6 +48,12 @@ namespace WhereDidMyMoneyGo.Models
         {
             var top = RepoTrans.GetUserTrans(userId);
             TopFiveTransactions = top.Count() > 5 ? top.Take(5) : top;
+        }
+
+        //Add new Transaction to database 
+        public void AddNewTrans(int userId, int venId, int catId, string date, string type, double amount)
+        {
+            RepoTrans.InsertNewTrans(userId, venId, catId, date, type, amount);
         }
     }
 }

@@ -27,5 +27,12 @@ namespace WhereDidMyMoneyGo.Models
             _connection.Execute("Insert Into Users (Username, Password, Balance, FirstName, LastName, SecurityAnswer) Values (@userName, @password, @balance, @first, @last, @secureAns);",
             new { userName = userName, password = password, balance = balance, first = first, last = last, secureAns = secureAns });
         }
+
+        //Update record balance
+        public void UpdateBalance(int userId, double balance)
+        {
+            _connection.Execute("Update Users Set Balance = @balance Where UserId = @userId;",
+            new { userId = userId, balance = balance});
+        }
     }
 }
