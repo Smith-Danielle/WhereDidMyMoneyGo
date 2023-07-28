@@ -47,7 +47,8 @@ namespace WhereDidMyMoneyGo.Controllers
         //Create Login Button from Entry Page
         public ActionResult CreateLogin()
         {
-            return View();
+            UsersModel user = new UsersModel();
+            return View(user);
         }
 
         //Submit Button from Create Login Page

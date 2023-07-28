@@ -3,85 +3,57 @@
 *@
 @model OverviewViewModel
 
-    <div style="padding-top: 30px; padding-bottom: 30px">
-        <h1>Welcome @Model.OverUsersModel.FirstName</h1>
-        <br />
+<div style="padding-top: 30px; padding-bottom: 30px">
+    <h1>Welcome @Model.OverUsersModel.FirstName</h1>
+    <br />
 
+    @{
+        if (Model.OverUsersModel.Balance.Contains('-'))
+        {
+            <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
+        }
+        else
+        {
+            <h4>Balance: $@Model.OverUsersModel.Balance</h4>
+        }
+    }
+    <br />
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <h5>Latest Transactions</h5>
+
+    <table class="table table-bordered" cellpadding="0" cellspacing="0">
+        <tr>
+            <th style="width:20%">Date</th>
+            <th style="width:20%">Vendor</th>
+            <th style="width:20%">Category</th>
+            <th style="width:20%">Type</th>
+            <th style="width:20%">Amount</th>
+        </tr>
         @{
-            if (Model.OverUsersModel.Balance.Contains('-'))
+            if (Model.OverTransactionsModel.TopFiveTransactions.Any())
             {
-                if (Model.OverUsersModel.Balance.Contains('.'))
+                foreach (var item in Model.OverTransactionsModel.TopFiveTransactions)
                 {
-                    <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
-                }
-                else
-                {
-                    <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1).00</h4>
-                }
-            }
-            else
-            {
-                if (Model.OverUsersModel.Balance.Contains('.'))
-                {
-                    <h4>Balance: $@Model.OverUsersModel.Balance</h4>
-                }
-                else
-                {
-                    <h4>Balance: $@Model.OverUsersModel.Balance.00</h4>
+                <tr>
+                    <td>@item.TransactionDate.Substring(0, 10)</td>
+                    <td>@item.VendorName</td>
+                    <td>@item.CategoryName</td>
+                    <td>@item.TransactionType</td>
+                    @if (item.TransactionType == "Expense")
+                    {
+                        <td>-$@item.TransactionAmount.ToString("0.00")</td>
+                    }
+                    else
+                    {
+                        <td>$@item.TransactionAmount.ToString("0.00")</td>
+                    }
+                </tr>
                 }
             }
         }
-        <br />
-        <br />
-        <br />
-        <br />
-        <br />
-
-        <h5>Latest Transactions</h5>
-
-        <table class="table table-bordered" cellpadding="0" cellspacing="0">
-            <tr>
-                <th style="width:20%">Date</th>
-                <th style="width:20%">Vendor</th>
-                <th style="width:20%">Category</th>
-                <th style="width:20%">Type</th>
-                <th style="width:20%">Amount</th>
-            </tr>
-            @{
-                if (Model.OverTransactionsModel.TopFiveTransactions.Any())
-                {
-                    foreach (var item in Model.OverTransactionsModel.TopFiveTransactions)
-                    {
-                        <tr>
-                            <td>@item.TransactionDate.Substring(0, 10)</td>
-                            <td>@item.VendorName</td>
-                            <td>@item.CategoryName</td>
-                            <td>@item.TransactionType</td>
-                            @if (item.TransactionAmount.ToString().Contains('.'))
-                            {
-                                @if (item.TransactionType == "Expense")
-                                {
-                                    <td>-$@item.TransactionAmount</td>
-                                }
-                                else
-                                {
-                                    <td>$@item.TransactionAmount</td>
-                                }
-                            }
-                            else
-                            {
-                                @if (item.TransactionType == "Expense")
-                                {
-                                    <td>-$@item.TransactionAmount.00</td>
-                                }
-                                else
-                                {
-                                    <td>$@item.TransactionAmount.00</td>
-                                }
-                            }
-                        </tr>
-                    }
-                }
-            }
-        </table>
-    </div>
+    </table>
+</div>

@@ -52,19 +52,9 @@
                 </tr>
             </table>
         }
-
-        <table style="border-collapse: separate; border-spacing: 24px;" cellpadding="0" cellspacing="0">
-            <tr>
-                <td align="left" style="font-size: x-small; background-color: yellow; font-weight: bold;">*Password: At least 10 characters. Contain 1 upper letter, 1 lower letter, 1 number.</td>
-            </tr>
-            <tr>
-                <td align="left" style="font-size: x-small; background-color: yellow; font-weight: bold;">*Beginning Balance: A non-negative numerical value. Larger than zero.</td>
-            </tr>
-        </table>
-
         <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="15" cellspacing="0">
             <tr>
-                <td>@Html.TextBoxFor(m => m.Message, new { @readonly = "readonly", style = "color:red; border:none; width:300px; font-weight:bold;" })</td>
+                <td readonly style="color: red; border: none; font-weight: bold;">@Model.Message</td>
             </tr>
         </table>
 

@@ -26,6 +26,9 @@ namespace WhereDidMyMoneyGo.Models
 
             List<string> transtypes = new List<string>() {"", "Revenue", "Expense" };
             TransTypeOptions = transtypes.Select(x => new SelectListItem() { Text = x, Value = x });
+
+            List<string> adjusttypes = new List<string>() { "", "Increase", "Decrease" };
+            AdjustTypeOptions = adjusttypes.Select(x => new SelectListItem() { Text = x, Value = x });
         }
 
         public TransactionsDapperRepo RepoTrans { get; set; }
@@ -40,7 +43,9 @@ namespace WhereDidMyMoneyGo.Models
         public string CategoryName { get; set; } //from Category table, join done in dapper repo, not needed for a transaction
         public IEnumerable<TransactionsTable> TopFiveTransactions { get; set; } //for overview home page
         public IEnumerable<SelectListItem> TransTypeOptions { get; set; } //Formatted for dropdown on view, trans entry
-        public string DropDownTypeSelection { get; set; } //Vendor option selected from view, will be assigned to final Transaction type
+        public string DropDownTypeSelection { get; set; } //Type selected from view, will be assigned to final Transaction type
+        public IEnumerable<SelectListItem> AdjustTypeOptions { get; set; } //Formatted for dropdown on view, adjust balance
+        public string DropDownAdjustSelection { get; set; } //Adjust type option selected from view, will help determine how to handle balance
 
 
         //List top 5 transactions

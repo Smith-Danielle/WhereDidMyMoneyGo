@@ -1,0 +1,141 @@
+﻿@*@*
+    Enter transaction
+*@
+@model OverviewViewModel
+
+<div style="padding-top: 30px; padding-bottom: 40px">
+
+    <h2><u>Activity Entry - Adjust Balance</u></h2>
+    <br />
+
+    @{
+        if (Model.OverUsersModel.Balance.Contains('-'))
+        {
+            <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
+        }
+        else
+        {
+            <h4>Balance: $@Model.OverUsersModel.Balance</h4>
+        }
+    }
+    <br />
+    <br />
+    <br />
+    <br />
+
+    <div class="text-center" style="border-style:double; width: 385px; margin: 0 auto">
+
+        @using (Html.BeginForm("FormAdjustBalance", "Overview", FormMethod.Get))
+        {
+            @Html.HiddenFor(m => m.OverUsersModel.UserId);
+            @Html.HiddenFor(m => m.OverUsersModel.UserName);
+            @Html.HiddenFor(m => m.OverUsersModel.Balance);
+
+        <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="15" cellspacing="0">
+            <tr>
+                <td readonly style="border: none; font-weight: bold; text-align: left;">Adjustments are used to edit your balance in order to account for discrepancies that cannot be resolved through transactions. Adjustments are not recorded as revenue or expenses and will uniquely be stored and shown in your reports as 'Adjustments'.</td>
+            </tr>
+            <tr>
+                <td readonly style="border: none; font-weight: bold; text-align: left;">If you wish to continue, please fill out the form below.</td>
+            </tr>
+        </table>
+
+                <table style="border-collapse: separate; padding-top: 12px; text-align:center;" cellpadding="15" cellspacing="0">
+                    <tr>
+                        <th>Date</th>
+                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionDate, new { @style = "width:250px; height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd") })</td>
+                    </tr>
+                    <tr>
+                        <th>Amount</th>
+                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.TransactionAmount, new { style = "width:250px;" })</td>
+                    </tr>
+                    <tr>
+                        <th>Type</th>
+                        <td>@Html.DropDownListFor(m => m.OverTransactionsModel.DropDownAdjustSelection, Model.OverTransactionsModel.AdjustTypeOptions, new { style = "width:250px;", })</td>
+                    </tr>
+                    <tr>
+                        <td>&nbsp;</td>
+                        <td style="padding-left: 200px;"><input type="submit" value="Submit" /></td>
+                    </tr>
+                </table>
+                }
+
+                <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="15" cellspacing="0">
+                    @{
+                        if (Model.Messages.Count > 0)
+                        {
+                            foreach (var item in Model.Messages)
+                            {
+                                if (Model.CompletedTransaction.Count == 0)
+                                {
+                                    <tr>
+                                        <td readonly style="color:red; border:none; font-weight:bold; text-align:left;">@item</td>
+                                    </tr>
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td readonly style="color: green; border: none; font-weight: bold; text-align: left;">@item</td>
+                                    </tr>
+                                }
+                            }
+                        }
+                        else
+                        {
+                            <tr>
+                                <td>&nbsp;</td>
+                            </tr>
+                        }
+                    }
+                </table>
+
+                @{
+                    if (Model.CompletedTransaction.Count > 0)
+                    {
+                        <div style="padding-left: 20px">
+                            <table class="table table-bordered" cellpadding="0" cellspacing="0" style="width: 559px; font-size: x-small; ">
+                                <tr>
+                                    <th style="width:20%">Date</th>
+                                    <th style="width:20%">Type</th>
+                                    <th style="width:20%">Amount</th>
+                                </tr>
+                                <tr>
+                                    @for (int i = 0; i < Model.CompletedTransaction.Count; i++)
+                                    {
+                                        if (i == Model.CompletedTransaction.Count - 1)
+                                        {
+                                            if (Model.CompletedTransaction[i - 1] == "Decrease")
+                                            {
+                                                <td>-$@Model.CompletedTransaction[i]</td>
+                                            }
+                                            else
+                                            {
+                                                <td>$@Model.CompletedTransaction[i]</td>
+                                            }
+                                        }
+                                        else
+                                        {
+                                            <td>@Model.CompletedTransaction[i]</td>
+                                        }
+                                    }
+                                </tr>
+                            </table>
+                        </div>
+                    }
+                }
+
+                @using (Html.BeginForm("ActivityEntry", "Overview", FormMethod.Get))
+                {
+                    <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
+                        <tr>
+                            <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
+                            <td><input type="submit" value="Back to Activity Entry" /></td>
+                        </tr>
+                    </table>
+                }
+
+        </div>
+
+
+
+</div>

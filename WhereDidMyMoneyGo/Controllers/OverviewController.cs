@@ -19,7 +19,7 @@ namespace WhereDidMyMoneyGo.Controllers
             var userInfo = user.GetUser(user.UserName);
             user.UserId = userInfo.First().UserId;
             user.FirstName = userInfo.First().FirstName;
-            user.Balance = userInfo.First().Balance.ToString();
+            user.Balance = userInfo.First().Balance.ToString("0.00");
 
             TransactionsModel trans = new TransactionsModel();
             trans.TopTrans(user.UserId);
@@ -39,7 +39,7 @@ namespace WhereDidMyMoneyGo.Controllers
             user.UserId = userInfo.First().UserId;
             user.UserName = userInfo.First().UserName;
             user.FirstName = userInfo.First().FirstName;
-            user.Balance = userInfo.First().Balance.ToString();
+            user.Balance = userInfo.First().Balance.ToString("0.00");
 
             TransactionsModel trans = new TransactionsModel();
             trans.TopTrans(user.UserId);
@@ -58,7 +58,7 @@ namespace WhereDidMyMoneyGo.Controllers
             var userInfo = user.GetUser(userName);
             user.UserId = userInfo.First().UserId;
             user.UserName = userInfo.First().UserName;
-            user.Balance = userInfo.First().Balance.ToString();
+            user.Balance = userInfo.First().Balance.ToString("0.00");
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;
@@ -73,7 +73,7 @@ namespace WhereDidMyMoneyGo.Controllers
             var userInfo = user.GetUser(userName);
             user.UserId = userInfo.First().UserId;
             user.UserName = userInfo.First().UserName;
-            user.Balance = userInfo.First().Balance.ToString();
+            user.Balance = userInfo.First().Balance.ToString("0.00");
 
             TransactionsModel trans = new TransactionsModel();
 
@@ -125,9 +125,10 @@ namespace WhereDidMyMoneyGo.Controllers
             }
 
             var trimBalance = overview.OverTransactionsModel.TransactionAmount.Where(x => char.IsNumber(x) || x == '.');
-            if (trimBalance.Count() != overview.OverTransactionsModel.TransactionAmount.Length || trimBalance.Where(x => x == '.').Count() > 1 || Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount) == 0)
+            int decimalPlaces = overview.OverTransactionsModel.TransactionAmount.Contains('.') ? overview.OverTransactionsModel.TransactionAmount.Substring(overview.OverTransactionsModel.TransactionAmount.IndexOf('.') + 1).Length : 0;
+            if (trimBalance.Count() != overview.OverTransactionsModel.TransactionAmount.Length || trimBalance.Where(x => x == '.').Count() > 1 || decimalPlaces > 2 || Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount) == 0)
             {
-                overview.Messages.Add("Amount must be a non-negative numerical value. Larger than zero.");
+                overview.Messages.Add("Amount must be numerical, non-negative, larger than zero, no more than 2 decimal places.");
                 return View("EnterTrans", overview);
             }
 
@@ -177,12 +178,46 @@ namespace WhereDidMyMoneyGo.Controllers
             overview.CompletedTransaction.Add(overview.OverVendorsModel.VendorName);
             overview.CompletedTransaction.Add(overview.OverCategoriesModel.CategoryName);
             overview.CompletedTransaction.Add(overview.OverTransactionsModel.TransactionType);
-            overview.CompletedTransaction.Add($"{Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount)}");
+            overview.CompletedTransaction.Add(Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount).ToString("0.00"));
             //Update User Balance
             overview.OverUsersModel.UpdateBalanceTrans(overview.OverUsersModel.UserId, Convert.ToDouble(overview.OverUsersModel.Balance), Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount), overview.OverTransactionsModel.TransactionType);
 
             return RedirectToAction("EnterTrans", "Overview", new {userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedTrans = overview.CompletedTransaction });
 
+        }
+
+        //Adjust Balance - Activity Entry Page
+        public ActionResult AdjustBalance(string userName, List<string> messages = null, List<string> completedTrans = null)
+        {
+            UsersModel user = new UsersModel();
+            var userInfo = user.GetUser(userName);
+            user.UserId = userInfo.First().UserId;
+            user.UserName = userInfo.First().UserName;
+            user.Balance = userInfo.First().Balance.ToString("0.00");
+
+            TransactionsModel trans = new TransactionsModel();
+
+            OverviewViewModel over = new OverviewViewModel();
+            over.OverUsersModel = user;
+            over.OverTransactionsModel = trans;
+            if (messages != null)
+            {
+                over.Messages = messages;
+            }
+            else
+            {
+                over.Messages = new List<string>();
+            }
+            if (completedTrans != null)
+            {
+                over.CompletedTransaction = completedTrans;
+            }
+            else
+            {
+                over.CompletedTransaction = new List<string>();
+            }
+
+            return View(over);
         }
 
 
@@ -196,7 +231,6 @@ namespace WhereDidMyMoneyGo.Controllers
 
 
 
-        
         //Tab on Overview Page: Activity Entry, back to Login Page
         public ActionResult Logout()
         {

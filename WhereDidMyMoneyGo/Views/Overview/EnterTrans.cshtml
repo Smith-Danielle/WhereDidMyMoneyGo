@@ -11,25 +11,11 @@
     @{
         if (Model.OverUsersModel.Balance.Contains('-'))
         {
-            if (Model.OverUsersModel.Balance.Contains('.'))
-            {
-                <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
-            }
-            else
-            {
-                <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1).00</h4>
-            }
+            <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
         }
         else
         {
-            if (Model.OverUsersModel.Balance.Contains('.'))
-            {
-                <h4>Balance: $@Model.OverUsersModel.Balance</h4>
-            }
-            else
-            {
-                <h4>Balance: $@Model.OverUsersModel.Balance.00</h4>
-            }
+            <h4>Balance: $@Model.OverUsersModel.Balance</h4>
         }
     }
     <br />
@@ -122,27 +108,13 @@
                             {
                                 if (i == Model.CompletedTransaction.Count - 1)
                                 {
-                                    if (Model.CompletedTransaction[i].ToString().Contains('.'))
+                                    if (Model.CompletedTransaction[i - 1] == "Expense")
                                     {
-                                        if (Model.CompletedTransaction[i - 1] == "Expense")
-                                        {
-                                            <td>-$@Model.CompletedTransaction[i]</td>
-                                        }
-                                        else
-                                        {
-                                            <td>$@Model.CompletedTransaction[i]</td>
-                                        }
+                                        <td>-$@Model.CompletedTransaction[i]</td>
                                     }
                                     else
                                     {
-                                        if (Model.CompletedTransaction[i - 1] == "Expense")
-                                        {
-                                            <td>-$@Model.CompletedTransaction[i].00</td>
-                                        }
-                                        else
-                                        {
-                                            <td>$@Model.CompletedTransaction[i].00</td>
-                                        }
+                                        <td>$@Model.CompletedTransaction[i]</td>
                                     }
                                 }
                                 else
@@ -154,18 +126,18 @@
                     </table>
                 </div>
             }
-         }
-         @using (Html.BeginForm("ActivityEntry", "Overview", FormMethod.Get))
-         {
-             <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
-                 <tr>
-                     <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
-                     <td><input type="submit" value="Back to Activity Entry" /></td>
-                 </tr>
-             </table>
-         }
+        }
+        @using (Html.BeginForm("ActivityEntry", "Overview", FormMethod.Get))
+        {
+            <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
+                <tr>
+                    <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
+                    <td><input type="submit" value="Back to Activity Entry" /></td>
+                </tr>
+            </table>
+        }
 
-</div>
+    </div>
 
 
 

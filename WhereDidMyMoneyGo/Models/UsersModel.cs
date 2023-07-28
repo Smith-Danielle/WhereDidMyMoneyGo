@@ -119,19 +119,20 @@ namespace WhereDidMyMoneyGo.Models
                         password.Where(x => char.IsNumber(x)).Count() >= 1)
                     {
                         var trimBalance = balance.Where(x => char.IsNumber(x) || x == '.');
-                        if (trimBalance.Any() && trimBalance.Where(x => x == '.').Count() <= 1 && string.Join("",trimBalance) == balance && Convert.ToDouble(balance) != 0)
+                        int decimalPlaces = balance.Contains('.') ? balance.Substring(balance.IndexOf('.') + 1).Length : 0; 
+                        if (trimBalance.Any() && trimBalance.Where(x => x == '.').Count() <= 1 && string.Join("",trimBalance) == balance && decimalPlaces <= 2 && Convert.ToDouble(balance) != 0)
                         {
                             RepoUser.InsertNewUser(userName, password, Convert.ToDouble(balance), first, last, secureAns);
                             Message = "Created.";
                         }
                         else
                         {
-                            Message = "Balance does not meet requirements.";
+                            Message = "Beginning Balance must be numerical, non-negative, larger than zero, no more than 2 decimal places.";
                         }
                     }
                     else
                     {
-                        Message = "Password does not meet requirements.";
+                        Message = "Password must contain at least 10 characters, 1 uppercase letter, 1 lowercase letter, 1 number.";
                     }
                 }
             }
@@ -142,11 +143,11 @@ namespace WhereDidMyMoneyGo.Models
         {
             if (transType == "Revenue")
             {
-                Balance = Convert.ToString(balance + transAmount);
+                Balance = (balance + transAmount).ToString("0.00");
             }
             else
             {
-                Balance = Convert.ToString(balance - transAmount);
+                Balance = (balance - transAmount).ToString("0.00");
             }
             RepoUser.UpdateBalance(userId, Convert.ToDouble(Balance));
         }
