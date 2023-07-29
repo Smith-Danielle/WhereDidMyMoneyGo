@@ -138,10 +138,10 @@ namespace WhereDidMyMoneyGo.Models
             }
         }
 
-        //Update User Balance after Transaction
-        public void UpdateBalanceTrans(int userId, double balance, double transAmount, string transType)
+        //Update User Balance after Transaction or Adjustment
+        public void UpdateBalance(int userId, double balance, double transAmount, string transType)
         {
-            if (transType == "Revenue")
+            if (transType == "Revenue" || transType == "Adjustment Increase")
             {
                 Balance = (balance + transAmount).ToString("0.00");
             }

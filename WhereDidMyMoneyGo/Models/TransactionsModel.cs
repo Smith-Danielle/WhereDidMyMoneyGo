@@ -27,14 +27,14 @@ namespace WhereDidMyMoneyGo.Models
             List<string> transtypes = new List<string>() {"", "Revenue", "Expense" };
             TransTypeOptions = transtypes.Select(x => new SelectListItem() { Text = x, Value = x });
 
-            List<string> adjusttypes = new List<string>() { "", "Increase", "Decrease" };
+            List<string> adjusttypes = new List<string>() { "", "Adjustment Increase", "Adjustment Decrease" };
             AdjustTypeOptions = adjusttypes.Select(x => new SelectListItem() { Text = x, Value = x });
         }
 
         public TransactionsDapperRepo RepoTrans { get; set; }
         public int TransactionId { get; set; }
         public DateTime TransactionDate { get; set; } //Before sending to repo, TransactionDate.ToString("yyyy-MM-dd");
-        public string TransactionType { get; set; } //Enum in database. Values: Revenue, Expense, Adjustment 
+        public string TransactionType { get; set; } //Enum in database. Values: Revenue, Expense, Adjustment Increase, Adjustment Decrease 
         public string TransactionAmount { get; set; } //In database this is a double. Will start out as string here, then validate user input, and convert before sending to database
         public int VendorId { get; set; }
         public int CategoryId { get; set; }
@@ -45,7 +45,6 @@ namespace WhereDidMyMoneyGo.Models
         public IEnumerable<SelectListItem> TransTypeOptions { get; set; } //Formatted for dropdown on view, trans entry
         public string DropDownTypeSelection { get; set; } //Type selected from view, will be assigned to final Transaction type
         public IEnumerable<SelectListItem> AdjustTypeOptions { get; set; } //Formatted for dropdown on view, adjust balance
-        public string DropDownAdjustSelection { get; set; } //Adjust type option selected from view, will help determine how to handle balance
 
 
         //List top 5 transactions

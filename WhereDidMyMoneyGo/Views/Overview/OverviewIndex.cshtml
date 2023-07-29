@@ -23,7 +23,7 @@
     <br />
     <br />
 
-    <h5>Latest Transactions</h5>
+    <h5>Latest Activity</h5>
 
     <table class="table table-bordered" cellpadding="0" cellspacing="0">
         <tr>
@@ -43,7 +43,7 @@
                     <td>@item.VendorName</td>
                     <td>@item.CategoryName</td>
                     <td>@item.TransactionType</td>
-                    @if (item.TransactionType == "Expense")
+                    @if (item.TransactionType == "Expense" || item.TransactionType == "Adjustment Decrease")
                     {
                         <td>-$@item.TransactionAmount.ToString("0.00")</td>
                     }

@@ -180,7 +180,7 @@ namespace WhereDidMyMoneyGo.Controllers
             overview.CompletedTransaction.Add(overview.OverTransactionsModel.TransactionType);
             overview.CompletedTransaction.Add(Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount).ToString("0.00"));
             //Update User Balance
-            overview.OverUsersModel.UpdateBalanceTrans(overview.OverUsersModel.UserId, Convert.ToDouble(overview.OverUsersModel.Balance), Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount), overview.OverTransactionsModel.TransactionType);
+            overview.OverUsersModel.UpdateBalance(overview.OverUsersModel.UserId, Convert.ToDouble(overview.OverUsersModel.Balance), Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount), overview.OverTransactionsModel.TransactionType);
 
             return RedirectToAction("EnterTrans", "Overview", new {userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedTrans = overview.CompletedTransaction });
 
@@ -220,7 +220,44 @@ namespace WhereDidMyMoneyGo.Controllers
             return View(over);
         }
 
+        //Submit on Adjust Balance Page
+        public ActionResult FormAdjustBalance(OverviewViewModel overview)
+        {
+            overview.Messages = new List<string>();
+            overview.CompletedTransaction = new List<string>();
 
+            if (string.IsNullOrEmpty(overview.OverTransactionsModel.TransactionType) || string.IsNullOrEmpty(overview.OverTransactionsModel.TransactionAmount) || overview.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd") == "0001-01-01")
+            {
+                overview.Messages.Add("All fields must be filled in to Submit.");
+                return View("AdjustBalance", overview);
+            }
+
+            var trimBalance = overview.OverTransactionsModel.TransactionAmount.Where(x => char.IsNumber(x) || x == '.');
+            int decimalPlaces = overview.OverTransactionsModel.TransactionAmount.Contains('.') ? overview.OverTransactionsModel.TransactionAmount.Substring(overview.OverTransactionsModel.TransactionAmount.IndexOf('.') + 1).Length : 0;
+            if (trimBalance.Count() != overview.OverTransactionsModel.TransactionAmount.Length || trimBalance.Where(x => x == '.').Count() > 1 || decimalPlaces > 2 || Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount) == 0)
+            {
+                overview.Messages.Add("Amount must be numerical, non-negative, larger than zero, no more than 2 decimal places.");
+                return View("AdjustBalance", overview);
+            }
+
+            //Proceed with database tranasctions after checks above
+            //Add Transaction (adjustment)
+            int venId = 5; //Hard coded from database for 'User Adjustment'
+
+            int catId = 17; //Hard coded from database for 'Balance Adjustment'
+
+            overview.OverTransactionsModel.AddNewTrans(overview.OverUsersModel.UserId, venId, catId, overview.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd"), overview.OverTransactionsModel.TransactionType, Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount));
+            overview.Messages.Add("The following Adjustment has been recorded:");
+            overview.CompletedTransaction.Add(overview.OverTransactionsModel.TransactionDate.ToString("MM-dd-yyyy"));
+            overview.CompletedTransaction.Add(overview.OverTransactionsModel.TransactionType);
+            overview.CompletedTransaction.Add(Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount).ToString("0.00"));
+            //Update User Balance
+            overview.OverUsersModel.UpdateBalance(overview.OverUsersModel.UserId, Convert.ToDouble(overview.OverUsersModel.Balance), Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount), overview.OverTransactionsModel.TransactionType);
+
+            return RedirectToAction("AdjustBalance", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedTrans = overview.CompletedTransaction });
+
+
+        }
 
 
 

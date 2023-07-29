@@ -36,6 +36,9 @@ update transactions set Transactiontype = 'Expense' where transactionid = 2;
 update transactions set Transactiontype = 'Expense' where transactionid = 3;
 */
 
+-- Clear transactions for more testing and to allow transaction type enum to be updated properly
+-- delete from transactions;
+
 select * from money.categories;
 select * from money.vendors;
 select * from money.transactions;

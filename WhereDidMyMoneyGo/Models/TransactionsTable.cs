@@ -9,7 +9,7 @@ namespace WhereDidMyMoneyGo.Models
 
         public int TransactionId { get; set; }
         public string TransactionDate { get; set; }
-        public string TransactionType { get; set; } //Enum in database. Values: Revenue, Expense, Adjustment 
+        public string TransactionType { get; set; } //Enum in database. Values: Revenue, Expense, Adjustment Increase, Adjustment Decrease
         public double TransactionAmount { get; set; }
         public int VendorId { get; set; }
         public int CategoryId { get; set; }
