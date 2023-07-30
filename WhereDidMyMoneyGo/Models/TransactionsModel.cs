@@ -45,13 +45,40 @@ namespace WhereDidMyMoneyGo.Models
         public IEnumerable<SelectListItem> TransTypeOptions { get; set; } //Formatted for dropdown on view, trans entry
         public string DropDownTypeSelection { get; set; } //Type selected from view, will be assigned to final Transaction type
         public IEnumerable<SelectListItem> AdjustTypeOptions { get; set; } //Formatted for dropdown on view, adjust balance
+        public List<DataPoint> DataPointsType { get; set; } //for overview page type pie chart
+        public List<DataPoint> DataPointsMonthly { get; set; } //for overview page monthly column chart
 
 
         //List top 5 transactions
-        public void TopTrans(int userId)
+        public void OverviewInfo(int userId)
         {
-            var top = RepoTrans.GetUserTrans(userId);
-            TopFiveTransactions = top.Count() > 5 ? top.Take(5) : top;
+            var trans = RepoTrans.GetUserTrans(userId);
+
+            //Top 5 Transactions
+            TopFiveTransactions = trans.Count() > 5 ? trans.Take(5) : trans;
+
+            //Type Pie Chart
+            double total = trans.Select(x => x.TransactionAmount).Sum();
+            var types = trans.GroupBy(x => x.TransactionType).Select(x => x.Key).OrderByDescending(x => x);
+            var stats = types.Select(x => new { Type = x, Percent = Math.Round((trans.Where(y => y.TransactionType == x).Select(y => y.TransactionAmount).Sum() / total) * 100, 2)});
+            DataPointsType = new List<DataPoint>();
+            foreach (var item in stats)
+            {
+                DataPoint temp = new DataPoint(item.Type, item.Percent);
+                DataPointsType.Add(temp);
+            }
+
+            //Month to Date spending
+            var currentMonth = trans.Where(x => Convert.ToDateTime(x.TransactionDate).Month == DateTime.Now.Month && Convert.ToDateTime(x.TransactionDate).Year == DateTime.Now.Year).GroupBy(x => x.TransactionDate).Select(x => x.Key).OrderBy(x => x);
+            var monthlyTotals = currentMonth.Select(x => new { Date = Convert.ToDateTime(x).Ticks.ToString(), Total = Math.Round(trans.Where(y => y.TransactionDate == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() -
+                                                                                                             trans.Where(y => y.TransactionDate == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2) });
+            DataPointsMonthly = new List<DataPoint>();
+            foreach (var item in monthlyTotals)
+            {
+                DataPoint temp = new DataPoint(item.Date, item.Total);
+                DataPointsMonthly.Add(temp);
+            }
+
         }
 
         //Add new Transaction to database 
@@ -59,5 +86,6 @@ namespace WhereDidMyMoneyGo.Models
         {
             RepoTrans.InsertNewTrans(userId, venId, catId, date, type, amount);
         }
+
     }
 }

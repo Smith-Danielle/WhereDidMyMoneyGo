@@ -3,21 +3,31 @@
 *@
 @model OverviewViewModel
 
-<div style="padding-top: 30px; padding-bottom: 30px">
-    <h1>Welcome @Model.OverUsersModel.FirstName</h1>
-    <br />
+<div style="padding-top: 30px;">
 
-    @{
-        if (Model.OverUsersModel.Balance.Contains('-'))
-        {
-            <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
-        }
-        else
-        {
-            <h4>Balance: $@Model.OverUsersModel.Balance</h4>
-        }
-    }
-    <br />
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-6">
+                <h1>Welcome @Model.OverUsersModel.FirstName</h1>
+                <br />
+
+                @{
+                    if (Model.OverUsersModel.Balance.Contains('-'))
+                    {
+                        <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
+                    }
+                    else
+                    {
+                        <h4>Balance: $@Model.OverUsersModel.Balance</h4>
+                    }
+                }
+            </div>
+            <div class="col-sm-3">
+                <div id="chartContainerType" style="width:340px; height:340px;"></div>
+            </div>
+        </div>
+    </div>
+
     <br />
     <br />
     <br />
@@ -38,22 +48,122 @@
             {
                 foreach (var item in Model.OverTransactionsModel.TopFiveTransactions)
                 {
-                <tr>
-                    <td>@item.TransactionDate.Substring(0, 10)</td>
-                    <td>@item.VendorName</td>
-                    <td>@item.CategoryName</td>
-                    <td>@item.TransactionType</td>
-                    @if (item.TransactionType == "Expense" || item.TransactionType == "Adjustment Decrease")
-                    {
-                        <td>-$@item.TransactionAmount.ToString("0.00")</td>
-                    }
-                    else
-                    {
-                        <td>$@item.TransactionAmount.ToString("0.00")</td>
-                    }
-                </tr>
+                    <tr>
+                        <td>@item.TransactionDate.Substring(0, 10)</td>
+                        <td>@item.VendorName</td>
+                        <td>@item.CategoryName</td>
+                        <td>@item.TransactionType</td>
+                        @if (item.TransactionType == "Expense" || item.TransactionType == "Adjustment Decrease")
+                        {
+                            <td>-$@item.TransactionAmount.ToString("0.00")</td>
+                        }
+                        else
+                        {
+                            <td>$@item.TransactionAmount.ToString("0.00")</td>
+                        }
+                    </tr>
                 }
             }
         }
     </table>
+
+    <br />
+    <br />
+
+    <div class="container">
+        <div class="row">
+            <div class="col-sm-5">
+                <div id="chartContainerMonthly" style="height:400px; width:800px;"></div>
+            </div>
+            <div class="col-sm-5">
+               <!-- <div id="chartContainerType" style="width:340px; height:340px;"></div> -->
+            </div>
+        </div>
+    </div>
+
 </div>
+
+
+<script type="text/javascript">
+    window.onload = function () {
+    CanvasJS.addColorSet("grayShades",
+        [//colorSet Array
+
+            "#404040",
+            "#707070",
+            "#A8A8A8",
+            "#D0D0D0"
+        ]);
+        var chartType = new CanvasJS.Chart("chartContainerType", {
+            colorSet: "grayShades",
+            //theme: "light2",
+            /*animationEnabled: true,
+            title: {
+                text: "Simple Column Chart in ASP.NET MVC"
+            },
+            subtitles: [
+                { text: "Try Resizing the Browser" }
+            ],*/
+            legend: {
+                maxWidth: 200,
+                itemWidth: 80
+            },
+            data: [
+                {
+                    type: "pie", //change type to bar, line, area, pie, etc
+                    showInLegend: true,
+                    legendText: "{x}",
+                    /*dataPoints: [
+                        { x: 10, y: 71 },
+                        { x: 20, y: 55 },
+                        { x: 30, y: 50 },
+                        { x: 40, y: 65 },
+                    ]*/
+                    dataPoints: @Html.Raw(ViewBag.DataPointsTransType),
+                }
+            ]
+        });
+        chartType.render();
+
+        const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+
+        const d = new Date();
+        let nameMonth = month[d.getMonth()];
+        let year = d.getFullYear();
+
+        var chartMonth = new CanvasJS.Chart("chartContainerMonthly", {
+            colorSet: "grayShades",
+            //theme: "light2",
+            //animationEnabled: true,
+            title: {
+                text: nameMonth + " " + year + " Daily Totals"
+            },
+            /*subtitles: [
+                { text: "Try Resizing the Browser" }
+            ],
+            legend: {
+                maxWidth: 200,
+                itemWidth: 80
+            },*/
+            axisX: {
+                valueFormatString: "DD"
+            },
+            data: [
+                {
+                    type: "spline", //change type to bar, line, area, pie, etc
+                    xValueType: "dateTime",
+                    xValueFormatString: "DD",
+                    //showInLegend: true,
+                    //legendText: "{x}",
+                    /*dataPoints: [
+                        { x: 10, y: 71 },
+                        { x: 20, y: 55 },
+                        { x: 30, y: 50 },
+                        { x: 40, y: 65 },
+                    ]*/
+                    dataPoints: @Html.Raw(ViewBag.DataPointsMonthDay),
+                }
+            ]
+        });
+        chartMonth.render();
+    };</script>

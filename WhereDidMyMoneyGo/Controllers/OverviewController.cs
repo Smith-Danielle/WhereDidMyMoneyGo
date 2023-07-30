@@ -3,6 +3,7 @@ using Microsoft.AspNetCore.Mvc;
 using WhereDidMyMoneyGo.Models;
 using System.Linq;
 using System.Collections.Generic;
+using Newtonsoft.Json;
 
 namespace WhereDidMyMoneyGo.Controllers
 {
@@ -22,7 +23,9 @@ namespace WhereDidMyMoneyGo.Controllers
             user.Balance = userInfo.First().Balance.ToString("0.00");
 
             TransactionsModel trans = new TransactionsModel();
-            trans.TopTrans(user.UserId);
+            trans.OverviewInfo(user.UserId);
+            ViewBag.DataPointsTransType = JsonConvert.SerializeObject(trans.DataPointsType);
+            ViewBag.DataPointsMonthDay = JsonConvert.SerializeObject(trans.DataPointsMonthly);
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;
@@ -42,7 +45,9 @@ namespace WhereDidMyMoneyGo.Controllers
             user.Balance = userInfo.First().Balance.ToString("0.00");
 
             TransactionsModel trans = new TransactionsModel();
-            trans.TopTrans(user.UserId);
+            trans.OverviewInfo(user.UserId);
+            ViewBag.DataPointsTransType = JsonConvert.SerializeObject(trans.DataPointsType);
+            ViewBag.DataPointsMonthDay = JsonConvert.SerializeObject(trans.DataPointsMonthly);
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;
