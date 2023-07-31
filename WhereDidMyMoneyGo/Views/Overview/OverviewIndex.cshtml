@@ -3,22 +3,22 @@
 *@
 @model OverviewViewModel
 
-<div style="padding-top: 30px;">
+<div style="padding-top: 30px; padding-bottom: 40px;">
 
     <div class="container">
         <div class="row">
             <div class="col-sm-6">
-                <h1>Welcome @Model.OverUsersModel.FirstName</h1>
+                <h1 style="font-weight:bold; font-size:45px;">Welcome @Model.OverUsersModel.FirstName</h1>
                 <br />
 
                 @{
                     if (Model.OverUsersModel.Balance.Contains('-'))
                     {
-                        <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
+                        <h3 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h3>
                     }
                     else
                     {
-                        <h4>Balance: $@Model.OverUsersModel.Balance</h4>
+                        <h3>Balance: $@Model.OverUsersModel.Balance</h3>
                     }
                 }
             </div>
@@ -31,9 +31,8 @@
     <br />
     <br />
     <br />
-    <br />
 
-    <h5>Latest Activity</h5>
+    <h5 style="font-weight:bold;">Latest Activity</h5>
 
     <table class="table table-bordered" cellpadding="0" cellspacing="0">
         <tr>
@@ -69,24 +68,47 @@
 
     <br />
     <br />
+    <br />
 
-    <div class="container">
-        <div class="row">
-            <div class="col-sm-5">
-                <div id="chartContainerMonthly" style="height:400px; width:800px;"></div>
-            </div>
-            <div class="col-sm-5">
-               <!-- <div id="chartContainerType" style="width:340px; height:340px;"></div> -->
-            </div>
-        </div>
-    </div>
+    @{
+        var monthlyTitle = DateTime.Now.ToString("MMMM") + $" {DateTime.Now.Year} Daily Totals";
+        <h5 style="font-weight:bold;">@monthlyTitle</h5>
+    }
 
+    <div id="chartContainerMonthly" style="height:350px; width:100%;"></div>
+
+    <br />
+    <br />
+    <br />
+
+    @{
+        var yearlyTitle = $"{DateTime.Now.Year} Monthly Totals";
+        <h5 style="font-weight:bold;">@yearlyTitle</h5>
+    }
+
+    <div id="chartContainerYearly" style="height:350px; width:100%;"></div>
+
+    <br />
+    <br />
+    <br />
+
+    <h5 style="font-weight:bold;">Vendor Totals</h5>
+
+    <div id="chartContainerVendor" style="height:350px; width:100%;"></div>
+
+    <br />
+    <br />
+    <br />
+
+    <h5 style="font-weight:bold;">Category Totals</h5>
+
+    <div id="chartContainerCategory" style="height:350px; width:100%;"></div>
 </div>
 
 
 <script type="text/javascript">
     window.onload = function () {
-    CanvasJS.addColorSet("grayShades",
+        CanvasJS.addColorSet("grayShades",
         [//colorSet Array
 
             "#404040",
@@ -110,60 +132,116 @@
             },
             data: [
                 {
-                    type: "pie", //change type to bar, line, area, pie, etc
+                    type: "pie",
                     showInLegend: true,
                     legendText: "{x}",
-                    /*dataPoints: [
-                        { x: 10, y: 71 },
-                        { x: 20, y: 55 },
-                        { x: 30, y: 50 },
-                        { x: 40, y: 65 },
-                    ]*/
                     dataPoints: @Html.Raw(ViewBag.DataPointsTransType),
                 }
             ]
         });
         chartType.render();
 
-        const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
-
-        const d = new Date();
-        let nameMonth = month[d.getMonth()];
-        let year = d.getFullYear();
-
         var chartMonth = new CanvasJS.Chart("chartContainerMonthly", {
-            colorSet: "grayShades",
-            //theme: "light2",
-            //animationEnabled: true,
-            title: {
-                text: nameMonth + " " + year + " Daily Totals"
-            },
-            /*subtitles: [
-                { text: "Try Resizing the Browser" }
-            ],
-            legend: {
-                maxWidth: 200,
-                itemWidth: 80
-            },*/
             axisX: {
-                valueFormatString: "DD"
+                interval: 1,
+                title: "Date",
+                titleFontWeight: "bold",
+            },
+            axisY: {
+                title: "Activity Total",
+                titleFontWeight: "bold",
+                labelFormatter: function (e) {
+                    if (String(e.value).includes("-")) {
+                        return "-$" + String(e.value).substring(1);
+                    }
+                    return "$" + e.value;
+                },
             },
             data: [
                 {
-                    type: "spline", //change type to bar, line, area, pie, etc
-                    xValueType: "dateTime",
-                    xValueFormatString: "DD",
-                    //showInLegend: true,
-                    //legendText: "{x}",
-                    /*dataPoints: [
-                        { x: 10, y: 71 },
-                        { x: 20, y: 55 },
-                        { x: 30, y: 50 },
-                        { x: 40, y: 65 },
-                    ]*/
+                    type: "column",
+                    color: "#707070",
                     dataPoints: @Html.Raw(ViewBag.DataPointsMonthDay),
                 }
             ]
         });
         chartMonth.render();
-    };</script>
+
+        var chartYear = new CanvasJS.Chart("chartContainerYearly", {
+            axisX: {
+                interval: 1,
+                title: "Month",
+                titleFontWeight: "bold",
+            },
+            axisY: {
+                title: "Activity Total",
+                titleFontWeight: "bold",
+                labelFormatter: function (e) {
+                    if (String(e.value).includes("-")) {
+                        return "-$" + String(e.value).substring(1);
+                    }
+                    return "$" + e.value;
+                },
+            },
+            data: [
+                {
+                    type: "column",
+                    color: "#707070",
+                    dataPoints: @Html.Raw(ViewBag.DataPointsYearMonth),
+                }
+            ]
+        });
+        chartYear.render();
+
+        var chartVendor = new CanvasJS.Chart("chartContainerVendor", {
+            axisX: {
+                title: "Vendor",
+                titleFontWeight: "bold",
+            },
+            axisY: {
+                title: "Activity Total",
+                titleFontWeight: "bold",
+                labelFormatter: function (e) {
+                    if (String(e.value).includes("-")) {
+                        return "-$" + String(e.value).substring(1);
+                    }
+                    return "$" + e.value;
+                },
+            },
+            data: [
+                {
+                    type: "bar",
+                    color: "#707070",
+                    dataPoints: @Html.Raw(ViewBag.DataPointsVendorActivity),
+                }
+            ]
+        });
+        chartVendor.render();
+
+        var chartCategory = new CanvasJS.Chart("chartContainerCategory", {
+            axisX: {
+                title: "Category",
+                titleFontWeight: "bold",
+            },
+            axisY: {
+                title: "Activity Total",
+                titleFontWeight: "bold",
+                labelFormatter: function (e) {
+                    if (String(e.value).includes("-")) {
+                        return "-$" + String(e.value).substring(1);
+                    }
+                    return "$" + e.value;
+                },
+            },
+            data: [
+                {
+                    type: "bar",
+                    color: "#707070",
+                    dataPoints: @Html.Raw(ViewBag.DataPointsCategoryActivity),
+                }
+            ]
+        });
+        chartCategory.render();
+
+    };
+</script>

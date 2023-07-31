@@ -26,6 +26,9 @@ namespace WhereDidMyMoneyGo.Controllers
             trans.OverviewInfo(user.UserId);
             ViewBag.DataPointsTransType = JsonConvert.SerializeObject(trans.DataPointsType);
             ViewBag.DataPointsMonthDay = JsonConvert.SerializeObject(trans.DataPointsMonthly);
+            ViewBag.DataPointsYearMonth = JsonConvert.SerializeObject(trans.DataPointsYearly);
+            ViewBag.DataPointsVendorActivity = JsonConvert.SerializeObject(trans.DataPointsVendor);
+            ViewBag.DataPointsCategoryActivity = JsonConvert.SerializeObject(trans.DataPointsCategory);
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;
@@ -48,6 +51,9 @@ namespace WhereDidMyMoneyGo.Controllers
             trans.OverviewInfo(user.UserId);
             ViewBag.DataPointsTransType = JsonConvert.SerializeObject(trans.DataPointsType);
             ViewBag.DataPointsMonthDay = JsonConvert.SerializeObject(trans.DataPointsMonthly);
+            ViewBag.DataPointsYearMonth = JsonConvert.SerializeObject(trans.DataPointsYearly);
+            ViewBag.DataPointsVendorActivity = JsonConvert.SerializeObject(trans.DataPointsVendor);
+            ViewBag.DataPointsCategoryActivity = JsonConvert.SerializeObject(trans.DataPointsCategory);
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;

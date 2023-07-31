@@ -24,7 +24,7 @@ namespace WhereDidMyMoneyGo.Models
 
             RepoTrans = new TransactionsDapperRepo(conn);
 
-            List<string> transtypes = new List<string>() {"", "Revenue", "Expense" };
+            List<string> transtypes = new List<string>() { "", "Revenue", "Expense" };
             TransTypeOptions = transtypes.Select(x => new SelectListItem() { Text = x, Value = x });
 
             List<string> adjusttypes = new List<string>() { "", "Adjustment Increase", "Adjustment Decrease" };
@@ -46,8 +46,10 @@ namespace WhereDidMyMoneyGo.Models
         public string DropDownTypeSelection { get; set; } //Type selected from view, will be assigned to final Transaction type
         public IEnumerable<SelectListItem> AdjustTypeOptions { get; set; } //Formatted for dropdown on view, adjust balance
         public List<DataPoint> DataPointsType { get; set; } //for overview page type pie chart
-        public List<DataPoint> DataPointsMonthly { get; set; } //for overview page monthly column chart
-
+        public List<DataPointColumn> DataPointsMonthly { get; set; } //for overview page monthly column chart
+        public List<DataPointColumn> DataPointsYearly { get; set; } //for overview page yearly column chart
+        public List<DataPointBar> DataPointsVendor { get; set; } // for overview page vendor bar chart
+        public List<DataPointBar> DataPointsCategory { get; set; } // for overview page category bar chart
 
         //List top 5 transactions
         public void OverviewInfo(int userId)
@@ -68,15 +70,66 @@ namespace WhereDidMyMoneyGo.Models
                 DataPointsType.Add(temp);
             }
 
-            //Month to Date spending
+            //Monthly spending
             var currentMonth = trans.Where(x => Convert.ToDateTime(x.TransactionDate).Month == DateTime.Now.Month && Convert.ToDateTime(x.TransactionDate).Year == DateTime.Now.Year).GroupBy(x => x.TransactionDate).Select(x => x.Key).OrderBy(x => x);
-            var monthlyTotals = currentMonth.Select(x => new { Date = Convert.ToDateTime(x).Ticks.ToString(), Total = Math.Round(trans.Where(y => y.TransactionDate == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() -
-                                                                                                             trans.Where(y => y.TransactionDate == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2) });
-            DataPointsMonthly = new List<DataPoint>();
-            foreach (var item in monthlyTotals)
+            var dailyTotals = currentMonth.Select(x => new { Day = Convert.ToDateTime(x).Day, Total = Math.Round(trans.Where(y => y.TransactionDate == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() -
+                                                                                                                 trans.Where(y => y.TransactionDate == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2) });
+            DataPointsMonthly = new List<DataPointColumn>();
+            var daysInCurrentMonth = DateTime.DaysInMonth(DateTime.Now.Year, DateTime.Now.Month);
+            for (int i = 1; i < daysInCurrentMonth + 1; i++)
             {
-                DataPoint temp = new DataPoint(item.Date, item.Total);
-                DataPointsMonthly.Add(temp);
+                if (dailyTotals.Where(x => x.Day == i).Any())
+                {
+                    DataPointColumn temp = new DataPointColumn(i, dailyTotals.Where(x => x.Day == i).Select(x => x.Total).First(), i.ToString());
+                    DataPointsMonthly.Add(temp);
+                }
+                else
+                {
+                    DataPointColumn temp = new DataPointColumn(i, 0, i.ToString());
+                    DataPointsMonthly.Add(temp);
+                }
+            }
+
+            //Yearly Spending
+            var currentYear = trans.Where(x => Convert.ToDateTime(x.TransactionDate).Year == DateTime.Now.Year).GroupBy(x => Convert.ToDateTime(x.TransactionDate).Month).Select(x => x.Key).OrderBy(x => x);
+            var monthlyTotals = currentYear.Select(x => new {Month = x, Total = Math.Round(trans.Where(y => Convert.ToDateTime(y.TransactionDate).Month == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() -
+                                                                                           trans.Where(y => Convert.ToDateTime(y.TransactionDate).Month == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2) });
+            DataPointsYearly = new List<DataPointColumn>();
+            List<string> monthNames = new List<string> { "January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December" };
+            for (int i = 1; i < 13; i++)
+            {
+                if (monthlyTotals.Where(x => x.Month == i).Any())
+                {
+                    DataPointColumn temp = new DataPointColumn(i, monthlyTotals.Where(x => x.Month == i).Select(x => x.Total).First(), monthNames[i - 1]);
+                    DataPointsYearly.Add(temp);
+                }
+                else
+                {
+                    DataPointColumn temp = new DataPointColumn(i, 0, monthNames[i - 1]);
+                    DataPointsYearly.Add(temp);
+                }
+            }
+
+            //Vendor Spending
+            var vendorsAll = trans.GroupBy(x => x.VendorName).Select(x => x.Key).OrderByDescending(x => x);
+            var vendorTotals = vendorsAll.Select(x => new {Vendor = x, Total = Math.Round(trans.Where(y => y.VendorName == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() -
+                                                                                          trans.Where(y => y.VendorName == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2) }).ToList();
+            DataPointsVendor = new List<DataPointBar>();
+            for (int i = 0; i < vendorTotals.Count; i++)
+            {
+                DataPointBar temp = new DataPointBar(vendorTotals[i].Total, vendorTotals[i].Vendor);
+                DataPointsVendor.Add(temp);
+            }
+
+            //Category Spending
+            var categoryAll = trans.GroupBy(x => x.CategoryName).Select(x => x.Key).OrderByDescending(x => x);
+            var categoryTotals = categoryAll.Select(x => new {Category = x, Total = Math.Round(trans.Where(y => y.CategoryName == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() -
+                                                                                               trans.Where(y => y.CategoryName == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2)}).ToList();
+            DataPointsCategory = new List<DataPointBar>();
+            for (int i = 0; i < categoryTotals.Count; i++)
+            {
+                DataPointBar temp = new DataPointBar(categoryTotals[i].Total, categoryTotals[i].Category);
+                DataPointsCategory.Add(temp);
             }
 
         }

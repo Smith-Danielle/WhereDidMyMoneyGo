@@ -5,17 +5,17 @@
 
 <div style="padding-top: 30px; padding-bottom: 40px">
 
-    <h2><u>Activity Entry</u></h2>
+    <h2 style="font-weight:bold;"><u>Activity Entry</u></h2>
     <br />
 
     @{
         if (Model.OverUsersModel.Balance.Contains('-'))
         {
-            <h4 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h4>
+            <h3 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h3>
         }
         else
         {
-            <h4>Balance: $@Model.OverUsersModel.Balance</h4>
+            <h3>Balance: $@Model.OverUsersModel.Balance</h3>
         }
     }
     <br />
