@@ -23,39 +23,42 @@
     <br />
 
     <div class="text-center">
-        <h5 style="padding-right:280px;">Transactions</h5>
-        <div style="border-style: double; width: 400px; margin: 0 auto">
-            <table style="border-collapse: separate; text-align: left;" cellpadding="20" cellspacing="0">
-                <tr>
-                    <td>Transactions are used to record and track your money flow. Choose from the system default vendors and categories for each transaction or choose from the ones you've previously entered. You can also add new vendors and categories as you enter each transcation.Transactions can either be recorded as 'Revenue' (increase to balance) or 'Expense' (decrease to balance)  and will be reflected in your reports as such.</td>
-                </tr>
-                <tr>
-                    @using (Html.BeginForm("EnterTrans", "Overview", FormMethod.Get))
-                    {
-                        <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
-                        <td style="padding-left: 20px"><input style="width: 150px" type="submit" value="Enter Transaction" /></td>
-                    }
-                </tr>
-            </table>
-        </div>
+        <div class="row">
+            <div class="col" style="padding-bottom:40px;">
+                <h5 style="padding-right:280px;">Transactions</h5>
+                <div style="border-style: double; width: 400px; margin: 0 auto">
+                    <table style="border-collapse: separate; text-align: left;" cellpadding="20" cellspacing="0">
+                        <tr>
+                            <td>Transactions are used to record and track your money flow. Choose from the system default vendors and categories for each transaction or choose from the ones you've previously entered. You can also add new vendors and categories as you enter each transcation.Transactions can either be recorded as 'Revenue' (increase to balance) or 'Expense' (decrease to balance)  and will be reflected in your reports as such.</td>
+                        </tr>
+                        <tr>
+                            @using (Html.BeginForm("EnterTrans", "Overview", FormMethod.Get))
+                            {
+                                <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
+                                <td style="padding-left: 20px"><input style="width: 150px" type="submit" value="Enter Transaction" /></td>
+                            }
+                        </tr>
+                    </table>
+                </div>
+            </div>
+            <div class="col">
+                <h5 style="padding-right:280px;">Adjustments</h5>
+                <div style="border-style: double; width: 400px; margin: 0 auto">
+                    <table style="border-collapse: separate; text-align: left;" cellpadding="20" cellspacing="0">
+                        <tr>
+                            <td>Adjustments are used to edit your balance in order to account for discrepancies that cannot be resolved through transactions. Adjustments are not recorded as revenue or expenses and will uniquely be stored and shown in your reports as 'Adjustment Increase' or 'Adjustment Decrease'.</td>
+                        </tr>
+                        <tr>
+                            @using (Html.BeginForm("AdjustBalance", "Overview", FormMethod.Get))
+                            {
+                                <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
+                                <td style="padding-left: 20px"><input style="width: 150px" type="submit" value="Adjust Balance" /></td>
+                            }
+                        </tr>
+                    </table>
+                </div>
+            </div>
 
-        <br />
-        <br />
-
-        <h5 style="padding-right:280px;">Adjustments</h5>
-        <div style="border-style: double; width: 400px; margin: 0 auto">
-            <table style="border-collapse: separate; text-align: left;" cellpadding="20" cellspacing="0">
-                <tr>
-                    <td>Adjustments are used to edit your balance in order to account for discrepancies that cannot be resolved through transactions. Adjustments are not recorded as revenue or expenses and will uniquely be stored and shown in your reports as 'Adjustment Increase' or 'Adjustment Decrease'.</td>
-                </tr>
-                <tr>
-                    @using (Html.BeginForm("AdjustBalance", "Overview", FormMethod.Get))
-                    {
-                        <td hidden><input type="hidden" name="userName" value="@Model.OverUsersModel.UserName" /></td>
-                        <td style="padding-left: 20px"><input style="width: 150px" type="submit" value="Adjust Balance" /></td>
-                    }
-                </tr>
-            </table>
         </div>
     </div>
 

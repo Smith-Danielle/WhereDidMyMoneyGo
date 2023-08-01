@@ -6,103 +6,128 @@
 <div style="padding-top: 30px; padding-bottom: 40px;">
 
     <div class="container">
-        <div class="row">
-            <div class="col-sm-6">
-                <h1 style="font-weight:bold; font-size:45px;">Welcome @Model.OverUsersModel.FirstName</h1>
-                <br />
 
-                @{
-                    if (Model.OverUsersModel.Balance.Contains('-'))
+        <div style="width: 650px; float: left;">
+            <h1 style="font-weight:bold; font-size:45px;">Welcome @Model.OverUsersModel.FirstName</h1>
+            <br />
+
+            @{
+                if (Model.OverUsersModel.Balance.Contains('-'))
+                {
+                    <h3 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h3>
+                }
+                else
+                {
+                    <h3>Balance: $@Model.OverUsersModel.Balance</h3>
+                }
+            }
+
+            <br />
+            <br />
+            <br />
+            <br />
+
+            <div class="row">
+                <div class="col">
+                    <div id="chartContainerVendor" style="height:300px; width:300px;"></div>
+                </div>
+                <div class="col">
+                    <div id="chartContainerCategory" style="height:300px; width:300px;"></div>
+                </div>
+            </div>
+
+        </div>
+
+        <div style="margin-left: 30px; float: left; width: 400px;">
+            <div id="chartContainerType" style="width:340px; height:340px;"></div>
+        </div>
+    </div>
+
+
+    <div class="container">
+        <div class="row">
+            <br />
+            <br />
+            <br />
+            <br />
+        </div>
+
+        <h5 style="font-weight:bold;">Latest Activity</h5>
+        
+        <table class="table table-bordered" cellpadding="0" cellspacing="0">
+            <tr>
+                <th style="width:20%">Date</th>
+                <th style="width:20%">Vendor</th>
+                <th style="width:20%">Category</th>
+                <th style="width:20%">Type</th>
+                <th style="width:20%">Amount</th>
+            </tr>
+            @{
+                if (Model.OverTransactionsModel.TopFiveTransactions.Any())
+                {
+                    foreach (var item in Model.OverTransactionsModel.TopFiveTransactions)
                     {
-                        <h3 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h3>
-                    }
-                    else
-                    {
-                        <h3>Balance: $@Model.OverUsersModel.Balance</h3>
+                        <tr>
+                            <td>@item.TransactionDate.Substring(0, 10)</td>
+                            <td>@item.VendorName</td>
+                            <td>@item.CategoryName</td>
+                            <td>@item.TransactionType</td>
+                            @if (item.TransactionType == "Expense" || item.TransactionType == "Adjustment Decrease")
+                            {
+                                <td>-$@item.TransactionAmount.ToString("0.00")</td>
+                            }
+                            else
+                            {
+                                <td>$@item.TransactionAmount.ToString("0.00")</td>
+                            }
+                        </tr>
                     }
                 }
-            </div>
-            <div class="col-sm-3">
-                <div id="chartContainerType" style="width:340px; height:340px;"></div>
-            </div>
-        </div>
+            }
+        </table>
     </div>
 
     <br />
     <br />
     <br />
 
-    <h5 style="font-weight:bold;">Latest Activity</h5>
-
-    <table class="table table-bordered" cellpadding="0" cellspacing="0">
-        <tr>
-            <th style="width:20%">Date</th>
-            <th style="width:20%">Vendor</th>
-            <th style="width:20%">Category</th>
-            <th style="width:20%">Type</th>
-            <th style="width:20%">Amount</th>
-        </tr>
-        @{
-            if (Model.OverTransactionsModel.TopFiveTransactions.Any())
-            {
-                foreach (var item in Model.OverTransactionsModel.TopFiveTransactions)
-                {
-                    <tr>
-                        <td>@item.TransactionDate.Substring(0, 10)</td>
-                        <td>@item.VendorName</td>
-                        <td>@item.CategoryName</td>
-                        <td>@item.TransactionType</td>
-                        @if (item.TransactionType == "Expense" || item.TransactionType == "Adjustment Decrease")
-                        {
-                            <td>-$@item.TransactionAmount.ToString("0.00")</td>
-                        }
-                        else
-                        {
-                            <td>$@item.TransactionAmount.ToString("0.00")</td>
-                        }
-                    </tr>
-                }
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                @{
+                var monthlyTitle = DateTime.Now.ToString("MMMM") + $" {DateTime.Now.Year} Summary";
+                <h5 style="font-weight:bold;">@monthlyTitle</h5>
             }
-        }
-    </table>
 
-    <br />
-    <br />
-    <br />
+                <div id="chartContainerMonthly" style="height:400px; width:520px"></div>
+            </div>
+            <div class="col">
+                @{
+                var yearlyTitle = $"Year {DateTime.Now.Year} Summary";
+                <h5 style="font-weight: bold;">@yearlyTitle</h5>
+            }
 
-    @{
-        var monthlyTitle = DateTime.Now.ToString("MMMM") + $" {DateTime.Now.Year} Daily Totals";
-        <h5 style="font-weight:bold;">@monthlyTitle</h5>
-    }
+                <div id="chartContainerYearly" style="height:400px; width:520px"></div>
+            </div>
+        </div>
+    </div>
 
-    <div id="chartContainerMonthly" style="height:350px; width:100%;"></div>
+    <!--
+    <div class="container">
+        <div class="row">
+            <div class="col">
+                <h5 style="font-weight: bold;">Vendor Totals</h5>
 
-    <br />
-    <br />
-    <br />
+                <div id="chartContainerVendor" style="height:300px; width:300px;"></div>
+            </div>
+            <div class="col">
+                <h5 style="font-weight: bold;">Category Totals</h5>
 
-    @{
-        var yearlyTitle = $"{DateTime.Now.Year} Monthly Totals";
-        <h5 style="font-weight:bold;">@yearlyTitle</h5>
-    }
-
-    <div id="chartContainerYearly" style="height:350px; width:100%;"></div>
-
-    <br />
-    <br />
-    <br />
-
-    <h5 style="font-weight:bold;">Vendor Totals</h5>
-
-    <div id="chartContainerVendor" style="height:350px; width:100%;"></div>
-
-    <br />
-    <br />
-    <br />
-
-    <h5 style="font-weight:bold;">Category Totals</h5>
-
-    <div id="chartContainerCategory" style="height:350px; width:100%;"></div>
+                <div id="chartContainerCategory" style="height:300px; width:300px;"></div>
+            </div>
+        </div>
+    </div>
+        -->
 </div>
 
 
@@ -119,16 +144,24 @@
         var chartType = new CanvasJS.Chart("chartContainerType", {
             colorSet: "grayShades",
             //theme: "light2",
-            /*animationEnabled: true,
+            //animationEnabled: true,
             title: {
-                text: "Simple Column Chart in ASP.NET MVC"
+                text: "Activity Type Summary",
+                horizontalAlign: "right",
+                verticalAlign: "center",
+                fontSize: 20,
+                fontWeight: "bold",
+                fontFamily: "arial",
             },
-            subtitles: [
+            /*subtitles: [
                 { text: "Try Resizing the Browser" }
             ],*/
             legend: {
                 maxWidth: 200,
-                itemWidth: 80
+                itemWidth: 80,
+            },
+            toolTip: {
+                content: "{y}%",
             },
             data: [
                 {
@@ -141,11 +174,29 @@
         });
         chartType.render();
 
+        /*const month = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"];
+        const d = new Date();
+        let nameMonth = month[d.getMonth()];
+        let currentYear = d.getFullYear();*/
+
         var chartMonth = new CanvasJS.Chart("chartContainerMonthly", {
+            //colorSet: "grayShades",
+            /*title: {
+                text: nameMonth + " " + currentYear + " Summary",
+                horizontalAlign: "center",
+                verticalAlign: "bottom",
+                fontSize: 20,
+                fontWeight: "bold",
+                fontFamily: "arial",
+                padding: {
+                    bottom: 8,
+                },
+            },*/
             axisX: {
                 interval: 1,
                 title: "Date",
                 titleFontWeight: "bold",
+                labelFontSize: 10
             },
             axisY: {
                 title: "Activity Total",
@@ -160,6 +211,7 @@
             data: [
                 {
                     type: "column",
+                    //radius: 90,
                     color: "#707070",
                     dataPoints: @Html.Raw(ViewBag.DataPointsMonthDay),
                 }
@@ -168,6 +220,18 @@
         chartMonth.render();
 
         var chartYear = new CanvasJS.Chart("chartContainerYearly", {
+            //colorSet: "grayShades",
+            /*title: {
+                text: currentYear + " Summary",
+                horizontalAlign: "center",
+                verticalAlign: "bottom",
+                fontSize: 20,
+                fontWeight: "bold",
+                fontFamily: "arial",
+                padding: {
+                    bottom: 8,
+                },
+            },*/
             axisX: {
                 interval: 1,
                 title: "Month",
@@ -186,6 +250,7 @@
             data: [
                 {
                     type: "column",
+                    //radius: 90,
                     color: "#707070",
                     dataPoints: @Html.Raw(ViewBag.DataPointsYearMonth),
                 }
@@ -194,6 +259,18 @@
         chartYear.render();
 
         var chartVendor = new CanvasJS.Chart("chartContainerVendor", {
+            colorSet: "grayShades",
+            title: {
+                text: "Top Vendors",
+                horizontalAlign: "center",
+                verticalAlign: "bottom",
+                fontSize: 20,
+                fontWeight: "bold",
+                fontFamily: "arial",
+                padding: {
+                    bottom: 8,
+                },
+            },
             axisX: {
                 title: "Vendor",
                 titleFontWeight: "bold",
@@ -210,8 +287,9 @@
             },
             data: [
                 {
-                    type: "bar",
-                    color: "#707070",
+                    type: "doughnut",
+                    radius: 90,
+                    //color: "#707070",
                     dataPoints: @Html.Raw(ViewBag.DataPointsVendorActivity),
                 }
             ]
@@ -219,6 +297,18 @@
         chartVendor.render();
 
         var chartCategory = new CanvasJS.Chart("chartContainerCategory", {
+            colorSet: "grayShades",
+            title: {
+                text: "Top Categories",
+                horizontalAlign: "center",
+                verticalAlign: "bottom",
+                fontSize: 20,
+                fontWeight: "bold",
+                fontFamily: "arial",
+                padding: {
+                    bottom: 8,
+                },
+            },
             axisX: {
                 title: "Category",
                 titleFontWeight: "bold",
@@ -235,8 +325,9 @@
             },
             data: [
                 {
-                    type: "bar",
-                    color: "#707070",
+                    type: "doughnut",
+                    radius: 90,
+                    //color: "#707070",
                     dataPoints: @Html.Raw(ViewBag.DataPointsCategoryActivity),
                 }
             ]
