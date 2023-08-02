@@ -8,12 +8,12 @@ namespace WhereDidMyMoneyGo.Models
 {
 	//DataContract for Serializing Data - required to serve in JSON format
 	[DataContract]
-	public class DataPointBar
+	public class DataPointCircular
 	{
-		public DataPointBar(double y, string label)
+		public DataPointCircular(double y, string x)
 		{
 			this.Y = y;
-			this.Label = label;
+			this.X = x;
 		}
 
 		//Explicitly setting the name to be used while serializing to JSON.
@@ -21,8 +21,8 @@ namespace WhereDidMyMoneyGo.Models
 		public Nullable<double> Y = null;
 
 		//Explicitly setting the name to be used while serializing to JSON.
-		[DataMember(Name = "label")]
-		public string Label = "";
+		[DataMember(Name = "x")]
+		public string X = "";
 
 	}
 }

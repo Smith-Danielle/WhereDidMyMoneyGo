@@ -11,11 +11,11 @@
     @{
         if (Model.OverUsersModel.Balance.Contains('-'))
         {
-            <h3 style="color:red;">Balance: -$@Model.OverUsersModel.Balance.Substring(1)</h3>
+            <h3 style="color:red;"><i>Balance: -$@Model.OverUsersModel.Balance.Substring(1)</i></h3>
         }
         else
         {
-            <h3>Balance: $@Model.OverUsersModel.Balance</h3>
+            <h3><i>Balance: $@Model.OverUsersModel.Balance</i></h3>
         }
     }
     <br />
