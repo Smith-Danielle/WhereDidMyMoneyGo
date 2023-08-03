@@ -1,6 +1,7 @@
 ﻿using System;
 using Microsoft.AspNetCore.Mvc;
 using WhereDidMyMoneyGo.Models;
+using System.Linq;
 
 namespace WhereDidMyMoneyGo.Controllers
 {
@@ -57,6 +58,16 @@ namespace WhereDidMyMoneyGo.Controllers
             createUser.CreateNewUser(createUser.UserName, createUser.Password, createUser.Balance, createUser.FirstName, createUser.LastName, createUser.SecurityAnswer);
             if (createUser.Message == "Created.")
             {
+                //add default vendor and cats to database for new user, then send them back to login
+                UsersModel user = new UsersModel();
+                var userInfo = user.GetUser(createUser.UserName);
+
+                VendorsModel ven = new VendorsModel();
+                ven.AddDefaultVendors(userInfo.First().UserId);
+
+                CategoriesModel cat = new CategoriesModel();
+                cat.AddDefaultCats(userInfo.First().UserId);
+
                 return RedirectToAction("EntryIndex", "Entry");
             }
             else

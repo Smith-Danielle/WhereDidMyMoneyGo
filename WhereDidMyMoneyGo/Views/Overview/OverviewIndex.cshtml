@@ -143,7 +143,7 @@
                 fontFamily: "arial",
             },
             legend: {
-                maxWidth: 200,
+                maxWidth: 210,
                 itemWidth: 80,
             },
             data: [
@@ -158,6 +158,7 @@
                 }
             ]
         });
+        checkForZeroDps(chartType);
         chartType.render();
 
         var chartVendor = new CanvasJS.Chart("chartContainerVendor", {
@@ -185,6 +186,7 @@
                 }
             ]
         });
+        checkForZeroDps(chartVendor);
         chartVendor.render();
 
         var chartCategory = new CanvasJS.Chart("chartContainerCategory", {
@@ -213,6 +215,7 @@
                 }
             ]
         });
+        checkForZeroDps(chartCategory);
         chartCategory.render();
 
         var chartMonth = new CanvasJS.Chart("chartContainerMonthly", {
@@ -284,5 +287,23 @@
         });
         chartYear.render();
 
+
+        function checkForZeroDps(chart) {
+            var isDpsZero = false;
+            if (chart.options.data[0].dataPoints.length == 0) {
+                    isDpsZero = true;
+            }
+            if (isDpsZero) {
+                //chart.options.data[0].type = "doughnut";
+                //chart.options.data[0].innerRadius = "99%";
+                chart.options.data[0].dataPoints.push({
+                    y: 0.000001,
+                    indexLabel: " ",
+                    indexLabelLineThickness: 0,
+                    toolTipContent: null,
+                    showInLegend: false,
+                });
+            }
+        }
     };
 </script>

@@ -15,9 +15,9 @@ namespace WhereDidMyMoneyGo.Models
         }
 
         //Get all default vendor records and user's entered vendors
-        public IEnumerable<VendorsTable> GetDefaultAndUserVendors(int userId)
+        public IEnumerable<VendorsTable> GetUserVendors(int userId)
         {
-            return _connection.Query<VendorsTable>("Select * From Vendors Where UserId In (1, @userId) and VendorId != 5 Order By VendorName;",
+            return _connection.Query<VendorsTable>("Select * From Vendors Where UserId = @userId Order By VendorName;",
                    new { userId = userId });
         }
 
@@ -28,6 +28,23 @@ namespace WhereDidMyMoneyGo.Models
             new { userId = userId, vendorName = vendorName });
         }
 
-        
+        //Insert Defaults for new Users
+        public void InsertNewUserDefaultVendors(int userId)
+        {
+            _connection.Execute("Insert Into Vendors (VendorName, UserId) Values ('Target', @userId);",
+            new { userId = userId });
+
+            _connection.Execute("Insert Into Vendors(VendorName, UserId) Values('Walmart', @userId);",
+            new { userId = userId });
+
+            _connection.Execute("Insert Into Vendors(VendorName, UserId) Values('Amazon', @userId);",
+            new { userId = userId });
+
+            _connection.Execute("Insert Into Vendors(VendorName, UserId) Values('Employer', @userId);",
+            new { userId = userId });
+
+            _connection.Execute("Insert Into Vendors(VendorName, UserId) Values('User Adjustment', @userId);",
+            new { userId = userId});
+        }
     }
 }

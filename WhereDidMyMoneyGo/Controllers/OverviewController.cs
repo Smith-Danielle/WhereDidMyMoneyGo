@@ -253,9 +253,13 @@ namespace WhereDidMyMoneyGo.Controllers
 
             //Proceed with database tranasctions after checks above
             //Add Transaction (adjustment)
-            int venId = 5; //Hard coded from database for 'User Adjustment'
+            VendorsModel ven = new VendorsModel();
+            ven.GetVendors(overview.OverUsersModel.UserId);
+            int venId = ven.AllVendorsInfo.Where(x => x.VendorName == "User Adjustment").Select(x => x.VendorId).First();
 
-            int catId = 17; //Hard coded from database for 'Balance Adjustment'
+            CategoriesModel cat = new CategoriesModel();
+            cat.GetCategories(overview.OverUsersModel.UserId);
+            int catId = cat.AllCategoriesInfo.Where(x => x.CategoryName == "Balance Adjustment").Select(x => x.CategoryId).First();
 
             overview.OverTransactionsModel.AddNewTrans(overview.OverUsersModel.UserId, venId, catId, overview.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd"), overview.OverTransactionsModel.TransactionType, Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount));
             overview.Messages.Add("The following Adjustment has been recorded:");

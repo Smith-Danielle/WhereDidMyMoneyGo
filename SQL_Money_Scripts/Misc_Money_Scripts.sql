@@ -39,6 +39,25 @@ update transactions set Transactiontype = 'Expense' where transactionid = 3;
 -- Clear transactions for more testing and to allow transaction type enum to be updated properly
 -- delete from transactions;
 
+-- When users are created, add default vendors and categories
+/*
+Insert Into Vendors (VendorName, UserId) Values ('Target', 2);
+Insert Into Vendors (VendorName, UserId) Values ('Walmart', 2);
+Insert Into Vendors (VendorName, UserId) Values ('Amazon', 2);
+Insert Into Vendors (VendorName, UserId) Values ('Employer', 2);
+Insert Into Vendors (VendorName, UserId) Values ('User Adjustment', 2);
+
+Insert Into Categories (CategoryName, UserId) Values ('Deposit', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Misc. Revenue', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Rent', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Car Note', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Gas', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Food & Beverage', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Clothing', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Entertainment', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Misc. Expense', 2);
+Insert Into Categories (CategoryName, UserId) Values ('Balance Adjustment', 2);
+*/
 select * from money.categories;
 select * from money.vendors;
 select * from money.transactions;

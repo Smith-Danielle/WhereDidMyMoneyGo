@@ -63,6 +63,7 @@ namespace WhereDidMyMoneyGo.Models
             var types = trans.GroupBy(x => x.TransactionType).Select(x => x.Key).OrderByDescending(x => x);
             var stats = types.Select(x => new { Type = x, Total = Math.Round(trans.Where(y => y.TransactionType == x && Convert.ToDateTime(y.TransactionDate).Year == DateTime.Now.Year).Select(y => y.TransactionAmount).Sum(), 2)});
             DataPointsType = new List<DataPointCircular>();
+
             foreach (var item in stats)
             {
                 DataPointCircular temp = new DataPointCircular(item.Total, item.Type);

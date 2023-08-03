@@ -33,22 +33,22 @@ namespace WhereDidMyMoneyGo.Models
         public string DropDownVenOption { get; set; } //Vendor option selected from view, this will also determine if the vendor chosen is new
         public IEnumerable<VendorsTable> AllVendorsInfo { get; set; }
 
-        //List all default Vendors and Vendors entered by user as SelectListItem
+        //List all Vendors entered by user as SelectListItem
         public void GetAllVendorsSelect(int userId)
         {
-            var vendors = RepoVen.GetDefaultAndUserVendors(userId);
+            var vendors = RepoVen.GetUserVendors(userId);
             VendorsTable blank = new VendorsTable() { VendorName = "" }; //This is for View to have an empty option
             VendorsTable addNew = new VendorsTable() { VendorName = "*ADD NEW VENDOR*" }; //This is for View to have option to add new vendor
-            var listVendors = vendors.ToList();
+            var listVendors = vendors.Where(x => x.VendorName != "User Adjustment").ToList();
             listVendors.Insert(0, blank);
             listVendors.Insert(1, addNew);
             AllVendorsSelect = listVendors.Select(x => new SelectListItem() { Text = x.VendorName.ToString(), Value = x.VendorName.ToString() });
         }
 
-        //List all default Vendors and Vendors entered by users normal, all vendor info
+        //List all Vendors entered by users normal, all vendor info
         public void GetVendors(int userId)
         {
-            AllVendorsInfo = RepoVen.GetDefaultAndUserVendors(userId);
+            AllVendorsInfo = RepoVen.GetUserVendors(userId);
         }
 
         //Add new inputted Vendor to database
@@ -57,5 +57,10 @@ namespace WhereDidMyMoneyGo.Models
             RepoVen.InsertNewVendor(userId, vendorName);
         }
 
+        //Add default vendor options for new users
+        public void AddDefaultVendors(int userId)
+        {
+            RepoVen.InsertNewUserDefaultVendors(userId);
+        }
     }
 }

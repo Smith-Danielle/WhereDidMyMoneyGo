@@ -33,28 +33,34 @@ namespace WhereDidMyMoneyGo.Models
         public string DropDownCatOption { get; set; } //Category option selected from view, this will also determine if the category chosen is new
         public IEnumerable<CategoriesTable> AllCategoriesInfo { get; set; }
 
-        //List all default Categories and Categories entered by user as SelectListItem
+        //List all Categories entered by user as SelectListItem
         public void GetAllCategoriesSelect(int userId)
         {
-            var categories = RepoCat.GetDefaultAndUserCats(userId);
+            var categories = RepoCat.GetUserCats(userId);
             CategoriesTable blank = new CategoriesTable() { CategoryName = "" }; //This is for View to have an empty option
             CategoriesTable addNew = new CategoriesTable() { CategoryName = "*ADD NEW CATEGORY*" }; //This is for View to have option to add new category
-            var listCategories = categories.ToList();
+            var listCategories = categories.Where(x => x.CategoryName != "Balance Adjustment").ToList();
             listCategories.Insert(0, blank);
             listCategories.Insert(1, addNew);
             AllCategoriesSelect = listCategories.Select(x => new SelectListItem() { Text = x.CategoryName.ToString(), Value = x.CategoryName.ToString() });
         }
 
-        //List all default Categories and Categories entered by users normal, all vendor info
+        //List all Categories entered by users normal, all vendor info
         public void GetCategories(int userId)
         {
-            AllCategoriesInfo = RepoCat.GetDefaultAndUserCats(userId);
+            AllCategoriesInfo = RepoCat.GetUserCats(userId);
         }
 
         //Add new inputted Category to database
         public void AddNewCategory(int userId, string categoryName)
         {
             RepoCat.InsertNewCategory(userId, categoryName);
+        }
+
+        //Add default category options for new users
+        public void AddDefaultCats (int userId)
+        {
+            RepoCat.InsertNewUserDefaultCats(userId);
         }
     }
 }
