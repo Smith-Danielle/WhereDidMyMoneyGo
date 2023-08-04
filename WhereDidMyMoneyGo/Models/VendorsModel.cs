@@ -57,6 +57,12 @@ namespace WhereDidMyMoneyGo.Models
             RepoVen.InsertNewVendor(userId, vendorName);
         }
 
+        //Delete user selected vendor
+        public void DeleteVendor(int userId, string vendorName)
+        {
+            RepoVen.DeleteUserVendor(userId, vendorName);
+        }
+
         //Add default vendor options for new users
         public void AddDefaultVendors(int userId)
         {

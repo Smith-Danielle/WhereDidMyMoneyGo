@@ -28,6 +28,13 @@ namespace WhereDidMyMoneyGo.Models
             new { userId = userId, vendorName = vendorName });
         }
 
+        //Delete record
+        public void DeleteUserVendor(int userId, string vendorName)
+        {
+            _connection.Execute("Delete From Vendors Where UserId = @userId And VendorName = @vendorName;",
+            new { userId = userId, vendorName = vendorName });
+        }
+
         //Insert Defaults for new Users
         public void InsertNewUserDefaultVendors(int userId)
         {

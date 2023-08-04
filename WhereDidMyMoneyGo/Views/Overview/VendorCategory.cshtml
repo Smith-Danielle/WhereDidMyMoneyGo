@@ -1,0 +1,199 @@
+﻿@*
+    View, Add, Delete Vendors and Categories
+*@
+@model OverviewViewModel
+
+<div style="padding-top: 30px; padding-bottom: 40px">
+
+    <h2 style="font-weight:bold;"><u>Vendors & Categories</u></h2>
+    <br />
+
+    @{
+        if (Model.OverUsersModel.Balance.Contains('-'))
+        {
+            <h3 style="color:red;"><i>Balance: -$@Model.OverUsersModel.Balance.Substring(1)</i></h3>
+        }
+        else
+        {
+            <h3><i>Balance: $@Model.OverUsersModel.Balance</i></h3>
+        }
+    }
+    <br />
+    <br />
+    <br />
+
+    <div class="text-center">
+
+        <div class="row">
+
+            <div class="col" style="padding-bottom:40px;">
+                <h5 style="padding-right:320px;">Vendors</h5>
+                <div style="border-style: double; width: 400px; height: 150px; overflow-x: hidden; overflow-y: auto; margin: 0 auto">
+                    <table class="table table-bordered" cellpadding="0" cellspacing="0">
+                        @{
+                            int countV = 1;
+                            foreach (var item in Model.OverVendorsModel.AllVendorsInfo)
+                            {
+                                <tr>
+                                    <td>@countV</td>
+                                    <td>@item.VendorName</td>
+                                </tr>
+                                countV++;
+                            }
+                        }
+                    </table>
+                </div>
+                <div class="container" style="width: 400px;">
+                    <table style="border-collapse: separate; padding-top: 30px;" cellpadding="20" cellspacing="0">
+                        @using (Html.BeginForm("FormVendorModify", "Overview", FormMethod.Get))
+                        {
+                            @Html.HiddenFor(m => m.OverUsersModel.UserId);
+                            @Html.HiddenFor(m => m.OverUsersModel.UserName);
+                            @Html.HiddenFor(m => m.OverUsersModel.Balance);
+                            @Html.HiddenFor(m => m.OverCategoriesModel.CategoryName);
+                            <tr>
+                                <td>@Html.TextBoxFor(m => m.OverVendorsModel.VendorName)</td>
+                                <td style="padding-left: 20px"><input style="width: 100px" name="command" type="submit" value="Add" /></td>
+
+                            </tr>
+                            <tr>
+                                <td>@Html.DropDownListFor(m => m.OverVendorsModel.VendorName, Model.OverVendorsModel.AllVendorsSelect, new { style = "width:200px;" })</td>
+                                <td style="padding-left: 20px"><input style="width: 100px" name="command" type="submit" value="Delete" /></td>
+
+                            </tr>
+                        }
+                    </table>
+                    <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="20" cellspacing="0">
+                        @{
+                            if (Model.Messages.Count > 0 || Model.CompletedRequest.Count > 0)
+                            {
+                                if (Model.Messages.Count > 0 && Model.Messages[0] == "Vendor")
+                                {
+                                    foreach (var item in Model.Messages)
+                                    {
+                                        if (item != "Vendor")
+                                        {
+                                            <tr>
+                                                <td readonly style="color:red; border:none; font-weight:bold; text-align:left;">@item</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                                else if (Model.CompletedRequest.Count > 0 && Model.CompletedRequest[0] == "Vendor")
+                                {
+                                    foreach (var item in Model.CompletedRequest)
+                                    {
+                                        if (item != "Vendor")
+                                        {
+                                            <tr>
+                                                <td readonly style="color: green; border: none; font-weight: bold; text-align: left;">@item</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+
+            <div class="col" style="padding-bottom:40px;">
+                <h5 style="padding-right:300px;">Categories</h5>
+                <div style="border-style: double; width: 400px; height: 150px; overflow-x: hidden; overflow-y: auto; margin: 0 auto">
+                    <table class="table table-bordered" cellpadding="0" cellspacing="0">
+                        @{
+                            int countC = 1;
+                            foreach (var item in Model.OverCategoriesModel.AllCategoriesInfo)
+                            {
+                                <tr>
+                                    <td>@countC</td>
+                                    <td>@item.CategoryName</td>
+                                </tr>
+                                countC++;
+                            }
+                        }
+                    </table>
+                </div>
+                <div class="container" style="width: 400px;">
+                    <table style="border-collapse: separate; padding-top: 30px;" cellpadding="20" cellspacing="0">
+                        @using (Html.BeginForm("FormCategoryModify", "Overview", FormMethod.Get))
+                        {
+                            @Html.HiddenFor(m => m.OverUsersModel.UserId);
+                            @Html.HiddenFor(m => m.OverUsersModel.UserName);
+                            @Html.HiddenFor(m => m.OverUsersModel.Balance);
+                            @Html.HiddenFor(m => m.OverVendorsModel.VendorName);
+                            <tr>
+                                <td>@Html.TextBoxFor(m => m.OverCategoriesModel.CategoryName)</td>
+                                <td style="padding-left: 20px"><input style="width: 100px" name="command" type="submit" value="Add" /></td>
+
+                            </tr>
+                            <tr>
+                                <td>@Html.DropDownListFor(m => m.OverCategoriesModel.CategoryName, Model.OverCategoriesModel.AllCategoriesSelect, new { style = "width:200px;" })</td>
+                                <td style="padding-left: 20px"><input style="width: 100px" name="command" type="submit" value="Delete" /></td>
+
+                            </tr>
+                        }
+                    </table>
+                    <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="20" cellspacing="0">
+                        @{
+                            if (Model.Messages.Count > 0 || Model.CompletedRequest.Count > 0)
+                            {
+                                if (Model.Messages.Count > 0 && Model.Messages[0] == "Category")
+                                {
+                                    foreach (var item in Model.Messages)
+                                    {
+                                        if (item != "Category")
+                                        {
+                                            <tr>
+                                                <td readonly style="color:red; border:none; font-weight:bold; text-align:left;">@item</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                                else if (Model.CompletedRequest.Count > 0 && Model.CompletedRequest[0] == "Category")
+                                {
+                                    foreach (var item in Model.CompletedRequest)
+                                    {
+                                        if (item != "Category")
+                                        {
+                                            <tr>
+                                                <td readonly style="color: green; border: none; font-weight: bold; text-align: left;">@item</td>
+                                            </tr>
+                                        }
+                                    }
+                                }
+                                else
+                                {
+                                    <tr>
+                                        <td>&nbsp;</td>
+                                    </tr>
+                                }
+                            }
+                            else
+                            {
+                                <tr>
+                                    <td>&nbsp;</td>
+                                </tr>
+                            }
+                        }
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </div>
+
+
+</div>

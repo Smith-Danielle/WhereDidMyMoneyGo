@@ -22,6 +22,6 @@ namespace WhereDidMyMoneyGo
         public CategoriesModel OverCategoriesModel { get; set; }
 
         public List<string> Messages { get; set; }
-        public List<string> CompletedTransaction { get; set; }
+        public List<string> CompletedRequest { get; set; }
     }
 }

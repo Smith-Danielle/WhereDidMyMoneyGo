@@ -78,7 +78,7 @@ namespace WhereDidMyMoneyGo.Controllers
         }
 
         //Enter Transaction - Activity Entry Page
-        public ActionResult EnterTrans(string userName, List<string> messages = null, List<string> completedTrans = null)
+        public ActionResult EnterTrans(string userName, List<string> messages = null, List<string> completedReq = null)
         {
             UsersModel user = new UsersModel();
             var userInfo = user.GetUser(userName);
@@ -107,13 +107,13 @@ namespace WhereDidMyMoneyGo.Controllers
             {
                 over.Messages = new List<string>();
             }
-            if (completedTrans != null)
+            if (completedReq != null)
             {
-                over.CompletedTransaction = completedTrans;
+                over.CompletedRequest = completedReq;
             }
             else
             {
-                over.CompletedTransaction = new List<string>();
+                over.CompletedRequest = new List<string>();
             }
 
             return View(over); 
@@ -125,7 +125,7 @@ namespace WhereDidMyMoneyGo.Controllers
             bool addVendor = false;
             bool addCategory = false;
             overview.Messages = new List<string>();
-            overview.CompletedTransaction = new List<string>();
+            overview.CompletedRequest = new List<string>();
             overview.OverVendorsModel.GetAllVendorsSelect(overview.OverUsersModel.UserId);
             overview.OverCategoriesModel.GetAllCategoriesSelect(overview.OverUsersModel.UserId);
 
@@ -185,20 +185,20 @@ namespace WhereDidMyMoneyGo.Controllers
 
             overview.OverTransactionsModel.AddNewTrans(overview.OverUsersModel.UserId, venId, catId, overview.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd"), overview.OverTransactionsModel.TransactionType, Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount));
             overview.Messages.Add("The following Transaction has been recorded:");
-            overview.CompletedTransaction.Add(overview.OverTransactionsModel.TransactionDate.ToString("MM-dd-yyyy"));
-            overview.CompletedTransaction.Add(overview.OverVendorsModel.VendorName);
-            overview.CompletedTransaction.Add(overview.OverCategoriesModel.CategoryName);
-            overview.CompletedTransaction.Add(overview.OverTransactionsModel.TransactionType);
-            overview.CompletedTransaction.Add(Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount).ToString("0.00"));
+            overview.CompletedRequest.Add(overview.OverTransactionsModel.TransactionDate.ToString("MM-dd-yyyy"));
+            overview.CompletedRequest.Add(overview.OverVendorsModel.VendorName);
+            overview.CompletedRequest.Add(overview.OverCategoriesModel.CategoryName);
+            overview.CompletedRequest.Add(overview.OverTransactionsModel.TransactionType);
+            overview.CompletedRequest.Add(Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount).ToString("0.00"));
             //Update User Balance
             overview.OverUsersModel.UpdateBalance(overview.OverUsersModel.UserId, Convert.ToDouble(overview.OverUsersModel.Balance), Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount), overview.OverTransactionsModel.TransactionType);
 
-            return RedirectToAction("EnterTrans", "Overview", new {userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedTrans = overview.CompletedTransaction });
+            return RedirectToAction("EnterTrans", "Overview", new {userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
 
         }
 
         //Adjust Balance - Activity Entry Page
-        public ActionResult AdjustBalance(string userName, List<string> messages = null, List<string> completedTrans = null)
+        public ActionResult AdjustBalance(string userName, List<string> messages = null, List<string> completedReq = null)
         {
             UsersModel user = new UsersModel();
             var userInfo = user.GetUser(userName);
@@ -219,13 +219,13 @@ namespace WhereDidMyMoneyGo.Controllers
             {
                 over.Messages = new List<string>();
             }
-            if (completedTrans != null)
+            if (completedReq != null)
             {
-                over.CompletedTransaction = completedTrans;
+                over.CompletedRequest = completedReq;
             }
             else
             {
-                over.CompletedTransaction = new List<string>();
+                over.CompletedRequest = new List<string>();
             }
 
             return View(over);
@@ -235,7 +235,7 @@ namespace WhereDidMyMoneyGo.Controllers
         public ActionResult FormAdjustBalance(OverviewViewModel overview)
         {
             overview.Messages = new List<string>();
-            overview.CompletedTransaction = new List<string>();
+            overview.CompletedRequest = new List<string>();
 
             if (string.IsNullOrEmpty(overview.OverTransactionsModel.TransactionType) || string.IsNullOrEmpty(overview.OverTransactionsModel.TransactionAmount) || overview.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd") == "0001-01-01")
             {
@@ -263,19 +263,128 @@ namespace WhereDidMyMoneyGo.Controllers
 
             overview.OverTransactionsModel.AddNewTrans(overview.OverUsersModel.UserId, venId, catId, overview.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd"), overview.OverTransactionsModel.TransactionType, Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount));
             overview.Messages.Add("The following Adjustment has been recorded:");
-            overview.CompletedTransaction.Add(overview.OverTransactionsModel.TransactionDate.ToString("MM-dd-yyyy"));
-            overview.CompletedTransaction.Add(overview.OverTransactionsModel.TransactionType);
-            overview.CompletedTransaction.Add(Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount).ToString("0.00"));
+            overview.CompletedRequest.Add(overview.OverTransactionsModel.TransactionDate.ToString("MM-dd-yyyy"));
+            overview.CompletedRequest.Add(overview.OverTransactionsModel.TransactionType);
+            overview.CompletedRequest.Add(Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount).ToString("0.00"));
             //Update User Balance
             overview.OverUsersModel.UpdateBalance(overview.OverUsersModel.UserId, Convert.ToDouble(overview.OverUsersModel.Balance), Convert.ToDouble(overview.OverTransactionsModel.TransactionAmount), overview.OverTransactionsModel.TransactionType);
 
-            return RedirectToAction("AdjustBalance", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedTrans = overview.CompletedTransaction });
+            return RedirectToAction("AdjustBalance", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
 
 
         }
 
+        //Tab on Overview Page: Vendors & Categories
+        public ActionResult VendorCategory(string userName, List<string> messages = null, List<string> completedReq = null, string vendorName = null, string categoryName = null)
+        {
+            UsersModel user = new UsersModel();
+            var userInfo = user.GetUser(userName);
+            user.UserId = userInfo.First().UserId;
+            user.UserName = userInfo.First().UserName;
+            user.Balance = userInfo.First().Balance.ToString("0.00");
+
+            VendorsModel vendor = new VendorsModel();
+            vendor.GetAllVendorsSelect(user.UserId);
+            vendor.AllVendorsSelect = vendor.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*");
+            vendor.GetVendors(user.UserId);
+            vendor.AllVendorsInfo = vendor.AllVendorsInfo.Where(x => x.VendorName != "User Adjustment");
+            if (vendorName != null)
+            {
+                vendor.VendorName = vendorName;
+            }
+
+            CategoriesModel cat = new CategoriesModel();
+            cat.GetAllCategoriesSelect(user.UserId);
+            cat.AllCategoriesSelect = cat.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
+            cat.GetCategories(user.UserId);
+            cat.AllCategoriesInfo = cat.AllCategoriesInfo.Where(x => x.CategoryName != "Balance Adjustment");
+            if (categoryName != null)
+            {
+                cat.CategoryName = categoryName;
+            }
+
+            OverviewViewModel over = new OverviewViewModel();
+            over.OverUsersModel = user;
+            over.OverVendorsModel = vendor;
+            over.OverCategoriesModel = cat;
+            if (messages != null)
+            {
+                over.Messages = messages;
+            }
+            else
+            {
+                over.Messages = new List<string>();
+            }
+            if (completedReq != null)
+            {
+                over.CompletedRequest = completedReq;
+            }
+            else
+            {
+                over.CompletedRequest = new List<string>();
+            }
+
+            return View(over);
+        }
+
+        //Add or Delete on Vendors & Categoriese Page
+        public ActionResult FormVendorModify(string command, OverviewViewModel overview)
+        {
+            //command return the name of the button Add or Delete
+            //will need Balance and potientially vendor and category lists (select & all) to send back to this view if there is an error)
+
+            overview.Messages = new List<string>();
+            overview.CompletedRequest = new List<string>();
+
+            if (string.IsNullOrEmpty(overview.OverVendorsModel.VendorName))
+            {
+                overview.Messages.Add("Vendor");
+                overview.Messages.Add("The corresponding field must be filled in to Add or Delete.");
+                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest, vendorName = overview.OverVendorsModel.VendorName, categoryName = overview.OverCategoriesModel.CategoryName });
+            }
+
+            if (command == "Add")
+            {
+                overview.OverVendorsModel.GetVendors(overview.OverUsersModel.UserId);
+                if (overview.OverVendorsModel.AllVendorsInfo.Select(x => x.VendorName.ToLower()).Contains(overview.OverVendorsModel.VendorName.ToLower()))
+                {
+                    overview.Messages.Add("Vendor");
+                    overview.Messages.Add("Vendor already exists.");
+                }
+                else
+                {
+                    overview.OverVendorsModel.AddNewVendor(overview.OverUsersModel.UserId, overview.OverVendorsModel.VendorName);
+                    overview.CompletedRequest.Add("Vendor");
+                    overview.CompletedRequest.Add($"Vendor: {overview.OverVendorsModel.VendorName} has been added.");
+                }
+                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest, vendorName = overview.OverVendorsModel.VendorName, categoryName = overview.OverCategoriesModel.CategoryName });
+            }
+            else
+            {
+                TransactionsModel trans = new TransactionsModel();
+                trans.GetAllUserTrans(overview.OverUsersModel.UserId);
+                if (trans.AllTransActions.Select(x => x.VendorName.ToLower()).Contains(overview.OverVendorsModel.VendorName.ToLower()))
+                {
+                    overview.Messages.Add("Vendor");
+                    overview.Messages.Add($"Vendors tied to pre-existing transactions cannot be deleted.");
+                }
+                else
+                {
+                    overview.OverVendorsModel.DeleteVendor(overview.OverUsersModel.UserId, overview.OverVendorsModel.VendorName);
+                    overview.CompletedRequest.Add("Vendor");
+                    overview.CompletedRequest.Add($"Vendor: {overview.OverVendorsModel.VendorName} has been deleted.");
+                }
+                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest, vendorName = overview.OverVendorsModel.VendorName, categoryName = overview.OverCategoriesModel.CategoryName });
+            }
+        }
 
 
+        //Add or Delete on Vendors & Categoriese Page
+        public ActionResult FormCategoryModify(string command, OverviewViewModel overview)
+        {
+            //command return the name of the button Add or Delete
+            return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
+        }
 
 
 

@@ -57,7 +57,7 @@
                 {
                     foreach (var item in Model.Messages)
                     {
-                        if (Model.CompletedTransaction.Count == 0)
+                        if (Model.CompletedRequest.Count == 0)
                         {
                             <tr>
                                 <td readonly style="color:red; border:none; font-weight:bold; text-align:left;">@item</td>
@@ -81,7 +81,7 @@
         </table>
 
         @{
-            if (Model.CompletedTransaction.Count > 0)
+            if (Model.CompletedRequest.Count > 0)
             {
                 <div style="padding-left: 20px">
                     <table class="table table-bordered" cellpadding="0" cellspacing="0" style="width: 339px; font-size: x-small; ">
@@ -91,22 +91,22 @@
                             <th style="width:20%">Amount</th>
                         </tr>
                         <tr>
-                            @for (int i = 0; i < Model.CompletedTransaction.Count; i++)
+                            @for (int i = 0; i < Model.CompletedRequest.Count; i++)
                             {
-                                if (i == Model.CompletedTransaction.Count - 1)
+                                if (i == Model.CompletedRequest.Count - 1)
                                 {
-                                    if (Model.CompletedTransaction[i - 1] == "Adjustment Decrease")
+                                    if (Model.CompletedRequest[i - 1] == "Adjustment Decrease")
                                     {
-                                        <td>-$@Model.CompletedTransaction[i]</td>
+                                        <td>-$@Model.CompletedRequest[i]</td>
                                     }
                                     else
                                     {
-                                        <td>$@Model.CompletedTransaction[i]</td>
+                                        <td>$@Model.CompletedRequest[i]</td>
                                     }
                                 }
                                 else
                                 {
-                                    <td>@Model.CompletedTransaction[i]</td>
+                                    <td>@Model.CompletedRequest[i]</td>
                                 }
                             }
                         </tr>
