@@ -275,7 +275,7 @@ namespace WhereDidMyMoneyGo.Controllers
         }
 
         //Tab on Overview Page: Vendors & Categories
-        public ActionResult VendorCategory(string userName, List<string> messages = null, List<string> completedReq = null, string vendorName = null, string categoryName = null)
+        public ActionResult VendorCategory(string userName, List<string> messages = null, List<string> completedReq = null)
         {
             UsersModel user = new UsersModel();
             var userInfo = user.GetUser(userName);
@@ -288,20 +288,12 @@ namespace WhereDidMyMoneyGo.Controllers
             vendor.AllVendorsSelect = vendor.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*");
             vendor.GetVendors(user.UserId);
             vendor.AllVendorsInfo = vendor.AllVendorsInfo.Where(x => x.VendorName != "User Adjustment");
-            if (vendorName != null)
-            {
-                vendor.VendorName = vendorName;
-            }
 
             CategoriesModel cat = new CategoriesModel();
             cat.GetAllCategoriesSelect(user.UserId);
             cat.AllCategoriesSelect = cat.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
             cat.GetCategories(user.UserId);
             cat.AllCategoriesInfo = cat.AllCategoriesInfo.Where(x => x.CategoryName != "Balance Adjustment");
-            if (categoryName != null)
-            {
-                cat.CategoryName = categoryName;
-            }
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;
@@ -327,29 +319,26 @@ namespace WhereDidMyMoneyGo.Controllers
             return View(over);
         }
 
-        //Add or Delete on Vendors & Categoriese Page
+        //Add or Delete on Vendors & Categories Page
         public ActionResult FormVendorModify(string command, OverviewViewModel overview)
         {
-            //command return the name of the button Add or Delete
-            //will need Balance and potientially vendor and category lists (select & all) to send back to this view if there is an error)
-
             overview.Messages = new List<string>();
             overview.CompletedRequest = new List<string>();
 
-            if (string.IsNullOrEmpty(overview.OverVendorsModel.VendorName))
-            {
-                overview.Messages.Add("Vendor");
-                overview.Messages.Add("The corresponding field must be filled in to Add or Delete.");
-                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest, vendorName = overview.OverVendorsModel.VendorName, categoryName = overview.OverCategoriesModel.CategoryName });
-            }
-
             if (command == "Add")
             {
+                if (string.IsNullOrEmpty(overview.OverVendorsModel.VendorName))
+                {
+                    overview.Messages.Add("Vendor");
+                    overview.Messages.Add("Please fill in the corresponding field to Add a new Vendor.");
+                    return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
+                }
+
                 overview.OverVendorsModel.GetVendors(overview.OverUsersModel.UserId);
                 if (overview.OverVendorsModel.AllVendorsInfo.Select(x => x.VendorName.ToLower()).Contains(overview.OverVendorsModel.VendorName.ToLower()))
                 {
                     overview.Messages.Add("Vendor");
-                    overview.Messages.Add("Vendor already exists.");
+                    overview.Messages.Add($"Vendor: {overview.OverVendorsModel.VendorName} already exists.");
                 }
                 else
                 {
@@ -357,24 +346,31 @@ namespace WhereDidMyMoneyGo.Controllers
                     overview.CompletedRequest.Add("Vendor");
                     overview.CompletedRequest.Add($"Vendor: {overview.OverVendorsModel.VendorName} has been added.");
                 }
-                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest, vendorName = overview.OverVendorsModel.VendorName, categoryName = overview.OverCategoriesModel.CategoryName });
+                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
             }
             else
             {
-                TransactionsModel trans = new TransactionsModel();
-                trans.GetAllUserTrans(overview.OverUsersModel.UserId);
-                if (trans.AllTransActions.Select(x => x.VendorName.ToLower()).Contains(overview.OverVendorsModel.VendorName.ToLower()))
+                if (string.IsNullOrEmpty(overview.OverVendorsModel.DropDownVenOption))
                 {
                     overview.Messages.Add("Vendor");
-                    overview.Messages.Add($"Vendors tied to pre-existing transactions cannot be deleted.");
+                    overview.Messages.Add("Please select a Vendor from the corresponding field to Delete.");
+                    return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
+                }
+
+                TransactionsModel trans = new TransactionsModel();
+                trans.GetAllUserTrans(overview.OverUsersModel.UserId);
+                if (trans.AllTransActions.Select(x => x.VendorName.ToLower()).Contains(overview.OverVendorsModel.DropDownVenOption.ToLower()))
+                {
+                    overview.Messages.Add("Vendor");
+                    overview.Messages.Add($"Vendor: {overview.OverVendorsModel.DropDownVenOption} is tied to a pre-existing transaction and cannot be deleted.");
                 }
                 else
                 {
-                    overview.OverVendorsModel.DeleteVendor(overview.OverUsersModel.UserId, overview.OverVendorsModel.VendorName);
+                    overview.OverVendorsModel.DeleteVendor(overview.OverUsersModel.UserId, overview.OverVendorsModel.DropDownVenOption);
                     overview.CompletedRequest.Add("Vendor");
-                    overview.CompletedRequest.Add($"Vendor: {overview.OverVendorsModel.VendorName} has been deleted.");
+                    overview.CompletedRequest.Add($"Vendor: {overview.OverVendorsModel.DropDownVenOption} has been deleted.");
                 }
-                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest, vendorName = overview.OverVendorsModel.VendorName, categoryName = overview.OverCategoriesModel.CategoryName });
+                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest});
             }
         }
 
@@ -382,11 +378,101 @@ namespace WhereDidMyMoneyGo.Controllers
         //Add or Delete on Vendors & Categoriese Page
         public ActionResult FormCategoryModify(string command, OverviewViewModel overview)
         {
-            //command return the name of the button Add or Delete
-            return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
+            overview.Messages = new List<string>();
+            overview.CompletedRequest = new List<string>();
+
+            if (command == "Add")
+            {
+                if (string.IsNullOrEmpty(overview.OverCategoriesModel.CategoryName))
+                {
+                    overview.Messages.Add("Category");
+                    overview.Messages.Add("Please fill in the corresponding field to Add a new Category.");
+                    return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
+                }
+
+                overview.OverCategoriesModel.GetCategories(overview.OverUsersModel.UserId);
+                if (overview.OverCategoriesModel.AllCategoriesInfo.Select(x => x.CategoryName.ToLower()).Contains(overview.OverCategoriesModel.CategoryName.ToLower()))
+                {
+                    overview.Messages.Add("Category");
+                    overview.Messages.Add($"Category: {overview.OverCategoriesModel.CategoryName} already exists.");
+                }
+                else
+                {
+                    overview.OverCategoriesModel.AddNewCategory(overview.OverUsersModel.UserId, overview.OverCategoriesModel.CategoryName);
+                    overview.CompletedRequest.Add("Category");
+                    overview.CompletedRequest.Add($"Category: {overview.OverCategoriesModel.CategoryName} has been added.");
+                }
+                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
+            }
+            else
+            {
+                if (string.IsNullOrEmpty(overview.OverCategoriesModel.DropDownCatOption))
+                {
+                    overview.Messages.Add("Category");
+                    overview.Messages.Add("Please select a Category from the corresponding field to Delete.");
+                    return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
+                }
+
+                TransactionsModel trans = new TransactionsModel();
+                trans.GetAllUserTrans(overview.OverUsersModel.UserId);
+                if (trans.AllTransActions.Select(x => x.CategoryName.ToLower()).Contains(overview.OverCategoriesModel.DropDownCatOption.ToLower()))
+                {
+                    overview.Messages.Add("Category");
+                    overview.Messages.Add($"Category: {overview.OverCategoriesModel.DropDownCatOption} is tied to a pre-existing transaction and cannot be deleted.");
+                }
+                else
+                {
+                    overview.OverCategoriesModel.DeleteCategory(overview.OverUsersModel.UserId, overview.OverCategoriesModel.DropDownCatOption);
+                    overview.CompletedRequest.Add("Category");
+                    overview.CompletedRequest.Add($"Category: {overview.OverCategoriesModel.DropDownCatOption} has been deleted.");
+                }
+                return RedirectToAction("VendorCategory", "Overview", new { userName = overview.OverUsersModel.UserName, messages = overview.Messages, completedReq = overview.CompletedRequest });
+            }
         }
 
+        //Tab on Overview Page: Reports
+        public ActionResult Reports(string userName, List<string> messages = null, List<string> completedReq = null)
+        {
+            UsersModel user = new UsersModel();
+            var userInfo = user.GetUser(userName);
+            user.UserId = userInfo.First().UserId;
+            user.UserName = userInfo.First().UserName;
+            user.Balance = userInfo.First().Balance.ToString("0.00");
 
+            TransactionsModel trans = new TransactionsModel();
+
+            VendorsModel vendor = new VendorsModel();
+            vendor.GetAllVendorsSelect(user.UserId);
+            vendor.AllVendorsSelect = vendor.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*");
+
+            CategoriesModel cat = new CategoriesModel();
+            cat.GetAllCategoriesSelect(user.UserId);
+            cat.AllCategoriesSelect = cat.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
+
+            OverviewViewModel over = new OverviewViewModel();
+            over.OverUsersModel = user;
+            over.OverTransactionsModel = trans;
+            over.OverVendorsModel = vendor;
+            over.OverCategoriesModel = cat;
+            if (messages != null)
+            {
+                over.Messages = messages;
+            }
+            else
+            {
+                over.Messages = new List<string>();
+            }
+            if (completedReq != null)
+            {
+                over.CompletedRequest = completedReq;
+            }
+            else
+            {
+                over.CompletedRequest = new List<string>();
+            }
+
+            return View(over);
+        }
 
 
 

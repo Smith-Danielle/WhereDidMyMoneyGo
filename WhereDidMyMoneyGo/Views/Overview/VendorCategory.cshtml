@@ -50,20 +50,19 @@
                             @Html.HiddenFor(m => m.OverUsersModel.UserId);
                             @Html.HiddenFor(m => m.OverUsersModel.UserName);
                             @Html.HiddenFor(m => m.OverUsersModel.Balance);
-                            @Html.HiddenFor(m => m.OverCategoriesModel.CategoryName);
                             <tr>
-                                <td>@Html.TextBoxFor(m => m.OverVendorsModel.VendorName)</td>
+                                <td>@Html.TextBoxFor(m => m.OverVendorsModel.VendorName, new { style = "width:200px;" })</td>
                                 <td style="padding-left: 20px"><input style="width: 100px" name="command" type="submit" value="Add" /></td>
 
                             </tr>
                             <tr>
-                                <td>@Html.DropDownListFor(m => m.OverVendorsModel.VendorName, Model.OverVendorsModel.AllVendorsSelect, new { style = "width:200px;" })</td>
+                                <td>@Html.DropDownListFor(m => m.OverVendorsModel.DropDownVenOption, Model.OverVendorsModel.AllVendorsSelect, new { style = "width:200px;" })</td>
                                 <td style="padding-left: 20px"><input style="width: 100px" name="command" type="submit" value="Delete" /></td>
 
                             </tr>
                         }
                     </table>
-                    <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="20" cellspacing="0">
+                    <table style="border-collapse: separate; border-spacing: 20px;" cellpadding="0" cellspacing="0">
                         @{
                             if (Model.Messages.Count > 0 || Model.CompletedRequest.Count > 0)
                             {
@@ -133,20 +132,19 @@
                             @Html.HiddenFor(m => m.OverUsersModel.UserId);
                             @Html.HiddenFor(m => m.OverUsersModel.UserName);
                             @Html.HiddenFor(m => m.OverUsersModel.Balance);
-                            @Html.HiddenFor(m => m.OverVendorsModel.VendorName);
                             <tr>
-                                <td>@Html.TextBoxFor(m => m.OverCategoriesModel.CategoryName)</td>
+                                <td>@Html.TextBoxFor(m => m.OverCategoriesModel.CategoryName, new { style = "width:200px;" })</td>
                                 <td style="padding-left: 20px"><input style="width: 100px" name="command" type="submit" value="Add" /></td>
 
                             </tr>
                             <tr>
-                                <td>@Html.DropDownListFor(m => m.OverCategoriesModel.CategoryName, Model.OverCategoriesModel.AllCategoriesSelect, new { style = "width:200px;" })</td>
+                                <td>@Html.DropDownListFor(m => m.OverCategoriesModel.DropDownCatOption, Model.OverCategoriesModel.AllCategoriesSelect, new { style = "width:200px;" })</td>
                                 <td style="padding-left: 20px"><input style="width: 100px" name="command" type="submit" value="Delete" /></td>
 
                             </tr>
                         }
                     </table>
-                    <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="20" cellspacing="0">
+                    <table style="border-collapse: separate; border-spacing: 20px;" cellpadding="0" cellspacing="0">
                         @{
                             if (Model.Messages.Count > 0 || Model.CompletedRequest.Count > 0)
                             {

@@ -57,6 +57,12 @@ namespace WhereDidMyMoneyGo.Models
             RepoCat.InsertNewCategory(userId, categoryName);
         }
 
+        //Delete user selected category
+        public void DeleteCategory(int userId, string categoryName)
+        {
+            RepoCat.DeleteUserCategory(userId, categoryName);
+        }
+
         //Add default category options for new users
         public void AddDefaultCats (int userId)
         {

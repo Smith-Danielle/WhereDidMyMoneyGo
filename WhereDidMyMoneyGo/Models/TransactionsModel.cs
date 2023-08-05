@@ -29,6 +29,9 @@ namespace WhereDidMyMoneyGo.Models
 
             List<string> adjusttypes = new List<string>() { "", "Adjustment Increase", "Adjustment Decrease" };
             AdjustTypeOptions = adjusttypes.Select(x => new SelectListItem() { Text = x, Value = x });
+
+            List<string> reporttypes = new List<string>() { "", "Revenue", "Expense", "Adjustment Increase", "Adjustment Decrease", "Revenue & Expense", "Adjustment Increase & Adjustment Decrease"};
+            ReportTypeOptions = reporttypes.Select(x => new SelectListItem() { Text = x, Value = x });
         }
 
         public TransactionsDapperRepo RepoTrans { get; set; }
@@ -51,6 +54,15 @@ namespace WhereDidMyMoneyGo.Models
         public List<DataPointCircular> DataPointsVendor { get; set; } // for overview page vendor bar chart
         public List<DataPointCircular> DataPointsCategory { get; set; } // for overview page category bar chart
         public IEnumerable<TransactionsTable> AllTransActions { get; set; } // all user transactions
+        public DateTime StartDateEntry { get; set; } //for reporting module
+        public DateTime EndDateEntry { get; set; } //for reporting module
+        public DateTime StartDateVendor { get; set; } //for reporting module
+        public DateTime EndDateVendor { get; set; } //for reporting module
+        public DateTime StartDateCategory { get; set; } //for reporting module
+        public DateTime EndDateCategory { get; set; } //for reporting module
+        public DateTime StartDateType { get; set; } //for reporting module
+        public DateTime EndDateType{ get; set; } //for reporting module
+        public IEnumerable<SelectListItem> ReportTypeOptions { get; set; } //Formatted for dropdown on view, reports
 
         //List top 5 transactions
         public void OverviewInfo(int userId)

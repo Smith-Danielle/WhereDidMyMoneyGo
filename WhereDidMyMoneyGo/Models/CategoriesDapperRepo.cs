@@ -29,6 +29,13 @@ namespace WhereDidMyMoneyGo.Models
             new { userId = userId, categoryName = categoryName });
         }
 
+        //Delete record
+        public void DeleteUserCategory(int userId, string categoryName)
+        {
+            _connection.Execute("Delete From Categories Where UserId = @userId And CategoryName = @categoryName;",
+            new { userId = userId, categoryName = categoryName });
+        }
+
         //Insert Defaults for new Users
         public void InsertNewUserDefaultCats(int userId)
         {
