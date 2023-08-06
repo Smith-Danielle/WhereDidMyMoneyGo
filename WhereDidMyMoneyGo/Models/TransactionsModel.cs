@@ -30,8 +30,11 @@ namespace WhereDidMyMoneyGo.Models
             List<string> adjusttypes = new List<string>() { "", "Adjustment Increase", "Adjustment Decrease" };
             AdjustTypeOptions = adjusttypes.Select(x => new SelectListItem() { Text = x, Value = x });
 
-            List<string> reporttypes = new List<string>() { "", "Revenue", "Expense", "Adjustment Increase", "Adjustment Decrease", "Revenue & Expense", "Adjustment Increase & Adjustment Decrease"};
+            List<string> reporttypes = new List<string>() { "", "ALL ACTIVITY TYPES", "Revenue", "Expense", "Adjustment Increase", "Adjustment Decrease", "Revenue & Expense", "Adjustment Increase & Adjustment Decrease"};
             ReportTypeOptions = reporttypes.Select(x => new SelectListItem() { Text = x, Value = x });
+
+            List<string> reportgroups = new List<string>() { "", "NONE", "By Day", "By Month", "By Year" };
+            ReportGroupOptions = reportgroups.Select(x => new SelectListItem() { Text = x, Value = x });
         }
 
         public TransactionsDapperRepo RepoTrans { get; set; }
@@ -62,7 +65,9 @@ namespace WhereDidMyMoneyGo.Models
         public DateTime EndDateCategory { get; set; } //for reporting module
         public DateTime StartDateType { get; set; } //for reporting module
         public DateTime EndDateType{ get; set; } //for reporting module
-        public IEnumerable<SelectListItem> ReportTypeOptions { get; set; } //Formatted for dropdown on view, reports
+        public IEnumerable<SelectListItem> ReportTypeOptions { get; set; } //Formatted for Type on dropdown on view, reports
+        public IEnumerable<SelectListItem> ReportGroupOptions { get; set; } //Formatted for Group dropdown on view, reports
+        public string DropDownGroupSelection { get; set; } //Group selected from view
 
         //List top 5 transactions
         public void OverviewInfo(int userId)
@@ -169,6 +174,28 @@ namespace WhereDidMyMoneyGo.Models
         public void GetAllUserTrans(int userId)
         {
             AllTransActions = RepoTrans.GetUserTrans(userId);
+        }
+
+
+        public void EntryReport(int userId, string group, DateTime start, DateTime end)
+        {
+            var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end).OrderBy(x => x.TransactionDate);
+            if (group == "NONE")
+            {
+                AllTransActions = trans;
+            }
+            if (group == "By Day")
+            {
+                var days = trans.GroupBy(x => x.TransactionDate).Select(x => x.Key).Select(x => new { Date = x, Count = trans.Where(y => y.TransactionDate.ToString() == x).Count(), Total = Math.Round(trans.Where(y => y.TransactionDate.ToString() == x).Select(y => y.TransactionAmount).Sum(), 2) }).ToList();
+                var transDates = trans.Select(x => x.TransactionDate).ToList();
+                var allTrans = trans.ToList();
+                for (int i = 0; i < days.Count(); i++)
+                {
+                    transDates.Insert(transDates.IndexOf(days[i].Date) + days[i].Count, $"{i}");
+                    allTrans.Insert(transDates.IndexOf($"{i}"), new TransactionsTable { TransactionAmount = days[i].Total });
+                }
+                AllTransActions = allTrans.Select(x => x);
+            }
         }
     }
 }

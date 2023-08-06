@@ -39,9 +39,11 @@ namespace WhereDidMyMoneyGo.Models
             var vendors = RepoVen.GetUserVendors(userId);
             VendorsTable blank = new VendorsTable() { VendorName = "" }; //This is for View to have an empty option
             VendorsTable addNew = new VendorsTable() { VendorName = "*ADD NEW VENDOR*" }; //This is for View to have option to add new vendor
+            VendorsTable all = new VendorsTable() { VendorName = "ALL VENDORS" }; //This is for reports view to run report including all vendors
             var listVendors = vendors.Where(x => x.VendorName != "User Adjustment").ToList();
             listVendors.Insert(0, blank);
             listVendors.Insert(1, addNew);
+            listVendors.Insert(2, all);
             AllVendorsSelect = listVendors.Select(x => new SelectListItem() { Text = x.VendorName.ToString(), Value = x.VendorName.ToString() });
         }
 

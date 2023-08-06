@@ -40,8 +40,10 @@ namespace WhereDidMyMoneyGo.Models
             CategoriesTable blank = new CategoriesTable() { CategoryName = "" }; //This is for View to have an empty option
             CategoriesTable addNew = new CategoriesTable() { CategoryName = "*ADD NEW CATEGORY*" }; //This is for View to have option to add new category
             var listCategories = categories.Where(x => x.CategoryName != "Balance Adjustment").ToList();
+            CategoriesTable all = new CategoriesTable() { CategoryName = "ALL CATEGORIES" }; //This is for reports view to run report including all categories
             listCategories.Insert(0, blank);
             listCategories.Insert(1, addNew);
+            listCategories.Insert(2, all);
             AllCategoriesSelect = listCategories.Select(x => new SelectListItem() { Text = x.CategoryName.ToString(), Value = x.CategoryName.ToString() });
         }
 

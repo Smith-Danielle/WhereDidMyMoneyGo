@@ -90,9 +90,11 @@ namespace WhereDidMyMoneyGo.Controllers
 
             VendorsModel vendor = new VendorsModel();
             vendor.GetAllVendorsSelect(user.UserId);
+            vendor.AllVendorsSelect = vendor.AllVendorsSelect.Where(x => x.Text != "ALL VENDORS");
 
             CategoriesModel cat = new CategoriesModel();
             cat.GetAllCategoriesSelect(user.UserId);
+            cat.AllCategoriesSelect = cat.AllCategoriesSelect.Where(x => x.Text != "ALL CATEGORIES");
 
             OverviewViewModel over = new OverviewViewModel();
             over.OverUsersModel = user;
@@ -127,7 +129,9 @@ namespace WhereDidMyMoneyGo.Controllers
             overview.Messages = new List<string>();
             overview.CompletedRequest = new List<string>();
             overview.OverVendorsModel.GetAllVendorsSelect(overview.OverUsersModel.UserId);
+            overview.OverVendorsModel.AllVendorsSelect = overview.OverVendorsModel.AllVendorsSelect.Where(x => x.Text != "ALL VENDORS");
             overview.OverCategoriesModel.GetAllCategoriesSelect(overview.OverUsersModel.UserId);
+            overview.OverCategoriesModel.AllCategoriesSelect = overview.OverCategoriesModel.AllCategoriesSelect.Where(x => x.Text != "ALL CATEGORIES");
 
             if (string.IsNullOrEmpty(overview.OverVendorsModel.VendorName) || string.IsNullOrEmpty(overview.OverCategoriesModel.CategoryName) || string.IsNullOrEmpty(overview.OverTransactionsModel.TransactionType) || string.IsNullOrEmpty(overview.OverTransactionsModel.TransactionAmount) || overview.OverTransactionsModel.TransactionDate.ToString("yyyy-MM-dd") == "0001-01-01")
             {
@@ -285,13 +289,13 @@ namespace WhereDidMyMoneyGo.Controllers
 
             VendorsModel vendor = new VendorsModel();
             vendor.GetAllVendorsSelect(user.UserId);
-            vendor.AllVendorsSelect = vendor.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*");
+            vendor.AllVendorsSelect = vendor.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*" && x.Text != "ALL VENDORS");
             vendor.GetVendors(user.UserId);
             vendor.AllVendorsInfo = vendor.AllVendorsInfo.Where(x => x.VendorName != "User Adjustment");
 
             CategoriesModel cat = new CategoriesModel();
             cat.GetAllCategoriesSelect(user.UserId);
-            cat.AllCategoriesSelect = cat.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
+            cat.AllCategoriesSelect = cat.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*" && x.Text != "ALL CATEGORIES");
             cat.GetCategories(user.UserId);
             cat.AllCategoriesInfo = cat.AllCategoriesInfo.Where(x => x.CategoryName != "Balance Adjustment");
 
@@ -375,7 +379,7 @@ namespace WhereDidMyMoneyGo.Controllers
         }
 
 
-        //Add or Delete on Vendors & Categoriese Page
+        //Add or Delete on Vendors & Categories Page
         public ActionResult FormCategoryModify(string command, OverviewViewModel overview)
         {
             overview.Messages = new List<string>();
@@ -431,7 +435,7 @@ namespace WhereDidMyMoneyGo.Controllers
         }
 
         //Tab on Overview Page: Reports
-        public ActionResult Reports(string userName, List<string> messages = null, List<string> completedReq = null)
+        public ActionResult Reports(string userName, List<string> completedReq = null)
         {
             UsersModel user = new UsersModel();
             var userInfo = user.GetUser(userName);
@@ -454,14 +458,7 @@ namespace WhereDidMyMoneyGo.Controllers
             over.OverTransactionsModel = trans;
             over.OverVendorsModel = vendor;
             over.OverCategoriesModel = cat;
-            if (messages != null)
-            {
-                over.Messages = messages;
-            }
-            else
-            {
-                over.Messages = new List<string>();
-            }
+            over.Messages = new List<string>();
             if (completedReq != null)
             {
                 over.CompletedRequest = completedReq;
@@ -474,8 +471,55 @@ namespace WhereDidMyMoneyGo.Controllers
             return View(over);
         }
 
+        //Report Options on Report Page
+        public ActionResult FormReports(string command, OverviewViewModel overview)
+        {
+            overview.Messages = new List<string>();
+            overview.CompletedRequest = new List<string>();
+            overview.OverVendorsModel.GetAllVendorsSelect(overview.OverUsersModel.UserId);
+            overview.OverVendorsModel.AllVendorsSelect = overview.OverVendorsModel.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*");
+            overview.OverCategoriesModel.GetAllCategoriesSelect(overview.OverUsersModel.UserId);
+            overview.OverCategoriesModel.AllCategoriesSelect = overview.OverCategoriesModel.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
 
+            if (command == "Entry Report")
+            {
+                if (string.IsNullOrEmpty(overview.OverTransactionsModel.DropDownGroupSelection))
+                {
+                    overview.Messages.Add("Entry Report: A Group option must be selected to run report.");
+                    return View("Reports", overview);
+                }
+                if (overview.OverTransactionsModel.StartDateEntry > overview.OverTransactionsModel.EndDateEntry)
+                {
+                    if (overview.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") != "0001-01-01")
+                    {
+                        overview.Messages.Add("Entry Report: Start Date must be before End Date.");
+                        return View("Reports", overview);
+                    }
+                }
+                if (overview.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") == "0001-01-01")
+                {
+                    overview.OverTransactionsModel.EndDateEntry = DateTime.Now;
+                }
+                overview.OverTransactionsModel.EntryReport(overview.OverUsersModel.UserId, overview.OverTransactionsModel.DropDownGroupSelection, overview.OverTransactionsModel.StartDateEntry, overview.OverTransactionsModel.EndDateEntry);
+                overview.CompletedRequest.Add("Activity Entry Report");
+                overview.CompletedRequest.Add($"Group: {overview.OverTransactionsModel.DropDownGroupSelection}");
+                overview.CompletedRequest.Add($"Dates: Between {overview.OverTransactionsModel.EndDateEntry.ToString("MM-dd-yyyy")} and {overview.OverTransactionsModel.EndDateEntry.ToString("MM-dd-yyyy")}.");
+                return RedirectToAction("Reports", "Overview", new { userName = overview.OverUsersModel.UserName, completedReq = overview.CompletedRequest });
+            }
+            if (command == "Vendor Report")
+            {
 
+            }
+            if (command == "Category Report")
+            {
+
+            }
+            if (command == "Type Report")
+            {
+
+            }
+            return View("Report", overview);
+        }
 
 
         //Tab on Overview Page: Activity Entry, back to Login Page
