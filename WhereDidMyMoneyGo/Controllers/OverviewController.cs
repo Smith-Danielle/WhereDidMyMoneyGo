@@ -435,7 +435,7 @@ namespace WhereDidMyMoneyGo.Controllers
         }
 
         //Tab on Overview Page: Reports
-        public ActionResult Reports(string userName, List<string> completedReq = null)
+        public ActionResult Reports(string userName)
         {
             UsersModel user = new UsersModel();
             var userInfo = user.GetUser(userName);
@@ -459,14 +459,7 @@ namespace WhereDidMyMoneyGo.Controllers
             over.OverVendorsModel = vendor;
             over.OverCategoriesModel = cat;
             over.Messages = new List<string>();
-            if (completedReq != null)
-            {
-                over.CompletedRequest = completedReq;
-            }
-            else
-            {
-                over.CompletedRequest = new List<string>();
-            }
+            over.CompletedRequest = new List<string>();
 
             return View(over);
         }
@@ -483,6 +476,10 @@ namespace WhereDidMyMoneyGo.Controllers
 
             if (command == "Entry Report")
             {
+                if (overview.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") == "0001-01-01")
+                {
+                    overview.OverTransactionsModel.EndDateEntry = DateTime.Now;
+                }
                 if (string.IsNullOrEmpty(overview.OverTransactionsModel.DropDownGroupSelection))
                 {
                     overview.Messages.Add("Entry Report: A Group option must be selected to run report.");
@@ -496,15 +493,39 @@ namespace WhereDidMyMoneyGo.Controllers
                         return View("Reports", overview);
                     }
                 }
-                if (overview.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") == "0001-01-01")
-                {
-                    overview.OverTransactionsModel.EndDateEntry = DateTime.Now;
-                }
+                
                 overview.OverTransactionsModel.EntryReport(overview.OverUsersModel.UserId, overview.OverTransactionsModel.DropDownGroupSelection, overview.OverTransactionsModel.StartDateEntry, overview.OverTransactionsModel.EndDateEntry);
+
+                //think about putting this section at the bottom to encompass all the methods for each report
+                var tempAllTrans = overview.OverTransactionsModel.AllTransActions.ToList();
+                var tempUser = overview.OverUsersModel.UserName;
+                var tempId = overview.OverUsersModel.UserId;
+                var tempBal = overview.OverUsersModel.Balance;
+                var tempGroup = overview.OverTransactionsModel.DropDownGroupSelection;
+                var tempStart = overview.OverTransactionsModel.StartDateEntry;
+                var tempEnd = overview.OverTransactionsModel.EndDateEntry;
+                ModelState.Clear();
+
+                overview.OverTransactionsModel = new TransactionsModel();
+                overview.OverUsersModel = new UsersModel();
+                overview.OverVendorsModel = new VendorsModel();
+                overview.OverCategoriesModel = new CategoriesModel();
+                overview.CompletedRequest = new List<string>();
+
+                overview.OverTransactionsModel.AllTransActions = tempAllTrans;
+                overview.OverUsersModel.UserName = tempUser;
+                overview.OverUsersModel.UserId = tempId;
+                overview.OverUsersModel.Balance = tempBal;
+                overview.OverVendorsModel.GetAllVendorsSelect(overview.OverUsersModel.UserId);
+                overview.OverVendorsModel.AllVendorsSelect = overview.OverVendorsModel.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*");
+                overview.OverCategoriesModel.GetAllCategoriesSelect(overview.OverUsersModel.UserId);
+                overview.OverCategoriesModel.AllCategoriesSelect = overview.OverCategoriesModel.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
                 overview.CompletedRequest.Add("Activity Entry Report");
-                overview.CompletedRequest.Add($"Group: {overview.OverTransactionsModel.DropDownGroupSelection}");
-                overview.CompletedRequest.Add($"Dates: Between {overview.OverTransactionsModel.EndDateEntry.ToString("MM-dd-yyyy")} and {overview.OverTransactionsModel.EndDateEntry.ToString("MM-dd-yyyy")}.");
-                return RedirectToAction("Reports", "Overview", new { userName = overview.OverUsersModel.UserName, completedReq = overview.CompletedRequest });
+                overview.CompletedRequest.Add($"Group: {tempGroup}");
+                overview.CompletedRequest.Add($"Dates: Between {tempStart.ToString("MM-dd-yyyy")} and {tempEnd.ToString("MM-dd-yyyy")}");
+
+
+                return View("Reports", overview);
             }
             if (command == "Vendor Report")
             {
@@ -520,6 +541,8 @@ namespace WhereDidMyMoneyGo.Controllers
             }
             return View("Report", overview);
         }
+
+
 
 
         //Tab on Overview Page: Activity Entry, back to Login Page

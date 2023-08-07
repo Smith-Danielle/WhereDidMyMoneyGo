@@ -27,114 +27,218 @@
         @Html.HiddenFor(m => m.OverUsersModel.UserId);
         @Html.HiddenFor(m => m.OverUsersModel.UserName);
         @Html.HiddenFor(m => m.OverUsersModel.Balance);
-<div class="container">
-    <div class="row" style="border-style: double; max-width:985px; margin: 0 auto">
+        <div class="container">
+            <div class="row" style="border-style: double; max-width:985px; margin: 0 auto">
 
-        <div class="col" style="padding-bottom:20px;">
-            <h5><u>By Activity Entry</u></h5>
-            <div>
-                <table style="border-collapse: separate; text-align: left;" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <th>Group</th>
-                        <td>@Html.DropDownListFor(m => m.OverTransactionsModel.DropDownGroupSelection, Model.OverTransactionsModel.ReportGroupOptions, new { style = "width:120px;" })</td>
-                    </tr>
-                    <tr>
-                        <th>Start Date</th>
-                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.StartDateEntry, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.StartDateEntry.ToString("yyyy-MM-dd") })</td>
+                <div class="col" style="padding-bottom:20px;">
+                    <h5><u>By Activity Entry</u></h5>
+                    <div>
+                        <table style="border-collapse: separate; text-align: left;" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <th>Group</th>
+                                <td>@Html.DropDownListFor(m => m.OverTransactionsModel.DropDownGroupSelection, Model.OverTransactionsModel.ReportGroupOptions, new { style = "width:120px;" })</td>
+                            </tr>
+                            <tr>
+                                <th>Start Date</th>
+                                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.StartDateEntry, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.StartDateEntry.ToString("yyyy-MM-dd") })</td>
 
-                    </tr>
-                    <tr>
-                        <th>End Date</th>
-                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.EndDateEntry, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") })</td>
+                            </tr>
+                            <tr>
+                                <th>End Date</th>
+                                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.EndDateEntry, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") })</td>
 
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td style="padding-left: 20px"><input style="width: 100px; font-size: 11px; background-color: #e7e7e7; " name="command" type="submit" value="Entry Report" /></td>
-                    </tr>
-                </table>
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td style="padding-left: 20px"><input style="width: 100px; font-size: 11px; background-color: #e7e7e7; " name="command" type="submit" value="Entry Report" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col" style="padding-bottom:20px;">
+                    <h5><u>By Vendor</u></h5>
+                    <div>
+                        <table style="border-collapse: separate; text-align: left;" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <th>Vendor</th>
+                                <td>@Html.DropDownListFor(m => m.OverVendorsModel.DropDownVenOption, Model.OverVendorsModel.AllVendorsSelect, new { style = "width:120px;" })</td>
+                            </tr>
+                            <tr>
+                                <th>Start Date</th>
+                                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.StartDateVendor, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.StartDateVendor.ToString("yyyy-MM-dd") })</td>
+
+                            </tr>
+                            <tr>
+                                <th>End Date</th>
+                                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.EndDateVendor, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.EndDateVendor.ToString("yyyy-MM-dd") })</td>
+
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td style="padding-left: 20px"><input style="width: 100px; font-size: 11px; background-color: #e7e7e7; " name="command" type="submit" value="Vendor Report" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col" style="padding-bottom:20px;">
+                    <h5><u>By Category</u></h5>
+                    <div>
+                        <table style="border-collapse: separate; text-align: left;" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <th>Category</th>
+                                <td>@Html.DropDownListFor(m => m.OverCategoriesModel.DropDownCatOption, Model.OverCategoriesModel.AllCategoriesSelect, new { style = "width:120px;" })</td>
+                            </tr>
+                            <tr>
+                                <th>Start Date</th>
+                                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.StartDateCategory, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.StartDateCategory.ToString("yyyy-MM-dd") })</td>
+
+                            </tr>
+                            <tr>
+                                <th>End Date</th>
+                                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.EndDateCategory, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.EndDateCategory.ToString("yyyy-MM-dd") })</td>
+
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td style="padding-left: 20px"><input style="width: 100px; font-size: 11px; background-color: #e7e7e7; " name="command" type="submit" value="Category Report" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
+                <div class="col" style="padding-bottom:20px;">
+                    <h5><u>By Activity Type</u></h5>
+                    <div>
+                        <table style="border-collapse: separate; text-align: left;" cellpadding="0" cellspacing="0">
+                            <tr>
+                                <th>Type</th>
+                                <td>@Html.DropDownListFor(m => m.OverTransactionsModel.DropDownTypeSelection, Model.OverTransactionsModel.ReportTypeOptions, new { style = "width:120px;" })</td>
+                            </tr>
+                            <tr>
+                                <th>Start Date</th>
+                                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.StartDateType, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.StartDateEntry.ToString("yyyy-MM-dd") })</td>
+
+                            </tr>
+                            <tr>
+                                <th>End Date</th>
+                                <td>@Html.TextBoxFor(m => m.OverTransactionsModel.EndDateType, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") })</td>
+
+                            </tr>
+                            <tr>
+                                <td>&nbsp;</td>
+                                <td style="padding-left: 20px"><input style="width: 100px; font-size: 11px; background-color: #e7e7e7; " name="command" type="submit" value="Type Report" /></td>
+                            </tr>
+                        </table>
+                    </div>
+                </div>
+
             </div>
         </div>
+     }
+    <br />
+     <div class="text-center">
+        @{
+            if (Model.Messages.Count > 0)
+            {
+                foreach (var item in Model.Messages)
+                {
+                    <h6 style="color: red; font-weight: bold;">@item</h6>
+                    
+                }
+            }
+            else
+            {
+                <h6>&nbsp;</h6>
+            }
+        }
+     </div>
+    <br />
+     <div>
+         @{
+             if (Model.CompletedRequest.Count > 0)
+             {
+                 <div class="text-center">
+                     <h4><b><u>@Model.CompletedRequest[0]</u></b></h4>
+                 </div>
+                     <br />
+                     <br />
+                     <br />
+                     <h6><b>@Model.CompletedRequest[1]</b></h6>
+                     <h6><b>@Model.CompletedRequest[2]</b></h6>
+                     <br />
+                     
+                     <table style="width:100%;" cellpadding="5" cellspacing="0"> <!--class="table table-bordered"-->
+                         <tr>
+                             <th style="width: 20%; border: 1px solid Gray;">Date</th>
+                             <th style="width: 20%; border: 1px solid Gray;">Vendor</th>
+                             <th style="width: 20%; border: 1px solid Gray;">Category</th>
+                             <th style="width: 20%; border: 1px solid Gray;">Type</th>
+                             <th style="width: 20%; border: 1px solid Gray;">Amount</th>
+                         </tr>
+                         @{
+                             if (Model.OverTransactionsModel.AllTransActions.Any())
+                             {
+                                 foreach (var item in Model.OverTransactionsModel.AllTransActions)
+                                 {
+                                                  <tr>
+                                                      @if (item.TransactionDate == null || item.TransactionDate == "Report Total")
+                                                      {
+                                                          if (item.TransactionDate == null)
+                                                          {
+                                                              <td style="border-left: 1px solid Gray; border-bottom: 1px solid Gray;">&nbsp;</td>
+                                                          }
+                                                          else
+                                                          {
+                                                              <td style="border-left: 1px solid Gray; border-bottom: 1px solid Gray;"><b>@item.TransactionDate</b></td>
+                                                          }
+                                                          <td style="border-top: 1px solid Gray; border-bottom: 1px solid Gray;">@item.VendorName</td>
+                                                          <td style="border-top: 1px solid Gray; border-bottom: 1px solid Gray;">@item.CategoryName</td>
+                                                          <td style="border-top: 1px solid Gray; border-bottom: 1px solid Gray;">@item.TransactionType</td>
+                                                          @if (item.TransactionAmount.ToString().Contains("-"))
+                                                          {
+                                                              <td style="border: 1px solid Gray;"><b>-$@Convert.ToDouble(item.TransactionAmount.ToString().Substring(1)).ToString("0.00")</b></td>
+                                                          }
+                                                          else if (item.TransactionType == "Expense" || item.TransactionType == "Adjustment Decrease")
+                                                          {
+                                                              <td style="border: 1px solid Gray;">-$@item.TransactionAmount.ToString("0.00")</td>
+                                                          }
+                                                          else
+                                                          {
+                                                              <td style="border: 1px solid Gray;"><b>$@item.TransactionAmount.ToString("0.00")</b></td>
+                                                          }
 
-        <div class="col" style="padding-bottom:20px;">
-            <h5><u>By Vendor</u></h5>
-            <div>
-                <table style="border-collapse: separate; text-align: left;" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <th>Vendor</th>
-                        <td>@Html.DropDownListFor(m => m.OverVendorsModel.DropDownVenOption, Model.OverVendorsModel.AllVendorsSelect, new { style = "width:120px;" })</td>
-                    </tr>
-                    <tr>
-                        <th>Start Date</th>
-                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.StartDateVendor, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.StartDateVendor.ToString("yyyy-MM-dd") })</td>
-
-                    </tr>
-                    <tr>
-                        <th>End Date</th>
-                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.EndDateVendor, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.EndDateVendor.ToString("yyyy-MM-dd") })</td>
-
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td style="padding-left: 20px"><input style="width: 100px; font-size: 11px; background-color: #e7e7e7; " name="command" type="submit" value="Vendor Report" /></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="col" style="padding-bottom:20px;">
-            <h5><u>By Category</u></h5>
-            <div>
-                <table style="border-collapse: separate; text-align: left;" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <th>Category</th>
-                        <td>@Html.DropDownListFor(m => m.OverCategoriesModel.DropDownCatOption, Model.OverCategoriesModel.AllCategoriesSelect, new { style = "width:120px;" })</td>
-                    </tr>
-                    <tr>
-                        <th>Start Date</th>
-                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.StartDateCategory, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.StartDateCategory.ToString("yyyy-MM-dd") })</td>
-
-                    </tr>
-                    <tr>
-                        <th>End Date</th>
-                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.EndDateCategory, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.EndDateCategory.ToString("yyyy-MM-dd") })</td>
-
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td style="padding-left: 20px"><input style="width: 100px; font-size: 11px; background-color: #e7e7e7; " name="command" type="submit" value="Category Report" /></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-        <div class="col" style="padding-bottom:20px;">
-            <h5><u>By Activity Type</u></h5>
-            <div>
-                <table style="border-collapse: separate; text-align: left;" cellpadding="0" cellspacing="0">
-                    <tr>
-                        <th>Type</th>
-                        <td>@Html.DropDownListFor(m => m.OverTransactionsModel.DropDownTypeSelection, Model.OverTransactionsModel.ReportTypeOptions, new { style = "width:120px;" })</td>
-                    </tr>
-                    <tr>
-                        <th>Start Date</th>
-                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.StartDateType, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.StartDateEntry.ToString("yyyy-MM-dd") })</td>
-
-                    </tr>
-                    <tr>
-                        <th>End Date</th>
-                        <td>@Html.TextBoxFor(m => m.OverTransactionsModel.EndDateType, new { @style = "height: 30px; font-size:small; color:black; line-height: 12px; text-align:center;", @type = "date", @class = "form-control datepicker", @Value = Model.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") })</td>
-
-                    </tr>
-                    <tr>
-                        <td>&nbsp;</td>
-                        <td style="padding-left: 20px"><input style="width: 100px; font-size: 11px; background-color: #e7e7e7; " name="command" type="submit" value="Type Report" /></td>
-                    </tr>
-                </table>
-            </div>
-        </div>
-
-    </div>
-    </div>
-    }
-</div>
+                                                      }
+                                                      else
+                                                      {
+                                                          <td style="border: 1px solid Gray;">@item.TransactionDate.Substring(0, 10)</td>
+                                                          <td style="border: 1px solid Gray;">@item.VendorName</td>
+                                                          <td style="border: 1px solid Gray;">@item.CategoryName</td>
+                                                          <td style="border: 1px solid Gray;">@item.TransactionType</td>
+                                                          @if (item.TransactionAmount.ToString().Contains("-"))
+                                                          {
+                                                              <td style="border: 1px solid Gray;"><b>-$@Convert.ToDouble(item.TransactionAmount.ToString().Substring(1)).ToString("0.00")</b></td>
+                                                          }
+                                                          else if (item.TransactionType == "Expense" || item.TransactionType == "Adjustment Decrease")
+                                                          {
+                                                              <td style="border: 1px solid Gray;">-$@item.TransactionAmount.ToString("0.00")</td>
+                                                          }
+                                                          else
+                                                          {
+                                                              <td style="border: 1px solid Gray;">$@item.TransactionAmount.ToString("0.00")</td>
+                                                          }
+                                                      }
+                                                  </tr>
+                                 }
+                             }
+                         }
+                     </table>
+                     }
+                     else
+                     {
+                     <h6>&nbsp;</h6>
+                     }
+                     }
+                 </div>
+             </div>
