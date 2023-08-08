@@ -474,78 +474,146 @@ namespace WhereDidMyMoneyGo.Controllers
             overview.OverCategoriesModel.GetAllCategoriesSelect(overview.OverUsersModel.UserId);
             overview.OverCategoriesModel.AllCategoriesSelect = overview.OverCategoriesModel.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
 
+            Dictionary<string, List<string>> reportType = new Dictionary<string, List<string>>
+            {
+                { "Entry Report", new List<string> { "Group", overview.OverTransactionsModel.DropDownGroupSelection, "Activity Entry" } },
+                { "Vendor Report", new List<string> { "Vendor", overview.OverVendorsModel.DropDownVenOption, "Vendor" } },
+                { "Category Report", new List<string> { "Category", overview.OverCategoriesModel.DropDownCatOption, "Category" } },
+                { "Type Report", new List<string> { "Type", overview.OverTransactionsModel.DropDownTypeSelection, "Activity Type" } }
+            };
+
+            if (string.IsNullOrEmpty(reportType[command][1]))
+            {
+                overview.Messages.Add($"{command}: A {reportType[command][0]} option must be selected to run report.");
+                return View("Reports", overview);
+            }
+
             if (command == "Entry Report")
             {
                 if (overview.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") == "0001-01-01")
                 {
                     overview.OverTransactionsModel.EndDateEntry = DateTime.Now;
                 }
-                if (string.IsNullOrEmpty(overview.OverTransactionsModel.DropDownGroupSelection))
-                {
-                    overview.Messages.Add("Entry Report: A Group option must be selected to run report.");
-                    return View("Reports", overview);
-                }
                 if (overview.OverTransactionsModel.StartDateEntry > overview.OverTransactionsModel.EndDateEntry)
                 {
-                    if (overview.OverTransactionsModel.EndDateEntry.ToString("yyyy-MM-dd") != "0001-01-01")
-                    {
-                        overview.Messages.Add("Entry Report: Start Date must be before End Date.");
-                        return View("Reports", overview);
-                    }
+                    overview.Messages.Add($"{command}: Start Date must be before End Date.");
+                    return View("Reports", overview);
                 }
-                
-                overview.OverTransactionsModel.EntryReport(overview.OverUsersModel.UserId, overview.OverTransactionsModel.DropDownGroupSelection, overview.OverTransactionsModel.StartDateEntry, overview.OverTransactionsModel.EndDateEntry);
-
-                //think about putting this section at the bottom to encompass all the methods for each report
-                var tempAllTrans = overview.OverTransactionsModel.AllTransActions.ToList();
-                var tempUser = overview.OverUsersModel.UserName;
-                var tempId = overview.OverUsersModel.UserId;
-                var tempBal = overview.OverUsersModel.Balance;
-                var tempGroup = overview.OverTransactionsModel.DropDownGroupSelection;
-                var tempStart = overview.OverTransactionsModel.StartDateEntry;
-                var tempEnd = overview.OverTransactionsModel.EndDateEntry;
-                ModelState.Clear();
-
-                overview.OverTransactionsModel = new TransactionsModel();
-                overview.OverUsersModel = new UsersModel();
-                overview.OverVendorsModel = new VendorsModel();
-                overview.OverCategoriesModel = new CategoriesModel();
-                overview.CompletedRequest = new List<string>();
-
-                overview.OverTransactionsModel.AllTransActions = tempAllTrans;
-                overview.OverUsersModel.UserName = tempUser;
-                overview.OverUsersModel.UserId = tempId;
-                overview.OverUsersModel.Balance = tempBal;
-                overview.OverVendorsModel.GetAllVendorsSelect(overview.OverUsersModel.UserId);
-                overview.OverVendorsModel.AllVendorsSelect = overview.OverVendorsModel.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*");
-                overview.OverCategoriesModel.GetAllCategoriesSelect(overview.OverUsersModel.UserId);
-                overview.OverCategoriesModel.AllCategoriesSelect = overview.OverCategoriesModel.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
-                overview.CompletedRequest.Add("Activity Entry Report");
-                overview.CompletedRequest.Add($"Group: {tempGroup}");
-                overview.CompletedRequest.Add($"Dates: Between {tempStart.ToString("MM-dd-yyyy")} and {tempEnd.ToString("MM-dd-yyyy")}");
-
-
-                return View("Reports", overview);
+                overview.OverTransactionsModel.EntryReport(overview.OverUsersModel.UserId, reportType[command][1], overview.OverTransactionsModel.StartDateEntry, overview.OverTransactionsModel.EndDateEntry);
             }
+
             if (command == "Vendor Report")
             {
-
+                if (overview.OverTransactionsModel.EndDateVendor.ToString("yyyy-MM-dd") == "0001-01-01")
+                {
+                    overview.OverTransactionsModel.EndDateVendor = DateTime.Now;
+                }
+                if (overview.OverTransactionsModel.StartDateVendor > overview.OverTransactionsModel.EndDateVendor)
+                {
+                    overview.Messages.Add($"{command}: Start Date must be before End Date.");
+                    return View("Reports", overview);
+                }
+                overview.OverTransactionsModel.VendorReport(overview.OverUsersModel.UserId, reportType[command][1], overview.OverTransactionsModel.StartDateVendor, overview.OverTransactionsModel.EndDateVendor);
             }
+
             if (command == "Category Report")
             {
-
+                if (overview.OverTransactionsModel.EndDateCategory.ToString("yyyy-MM-dd") == "0001-01-01")
+                {
+                    overview.OverTransactionsModel.EndDateCategory = DateTime.Now;
+                }
+                if (overview.OverTransactionsModel.StartDateCategory > overview.OverTransactionsModel.EndDateCategory)
+                {
+                    overview.Messages.Add($"{command}: Start Date must be before End Date.");
+                    return View("Reports", overview);
+                }
+                overview.OverTransactionsModel.CategoryReport(overview.OverUsersModel.UserId, reportType[command][1], overview.OverTransactionsModel.StartDateCategory, overview.OverTransactionsModel.EndDateCategory);
             }
+
             if (command == "Type Report")
             {
-
+                if (overview.OverTransactionsModel.EndDateType.ToString("yyyy-MM-dd") == "0001-01-01")
+                {
+                    overview.OverTransactionsModel.EndDateType = DateTime.Now;
+                }
+                if (overview.OverTransactionsModel.StartDateType > overview.OverTransactionsModel.EndDateType)
+                {
+                    overview.Messages.Add($"{command}: Start Date must be before End Date.");
+                    return View("Reports", overview);
+                }
+                overview.OverTransactionsModel.TypeReport(overview.OverUsersModel.UserId, reportType[command][1], overview.OverTransactionsModel.StartDateType, overview.OverTransactionsModel.EndDateType);
             }
-            return View("Report", overview);
+
+            var tempAllTrans = overview.OverTransactionsModel.AllTransActions.ToList();
+            var tempUser = overview.OverUsersModel.UserName;
+            var tempId = overview.OverUsersModel.UserId;
+            var tempBal = overview.OverUsersModel.Balance;
+            var tempStart = command == "Entry Report" ? overview.OverTransactionsModel.StartDateEntry : command == "Vendor Report" ? overview.OverTransactionsModel.StartDateVendor : command == "Category Report" ? overview.OverTransactionsModel.StartDateCategory : overview.OverTransactionsModel.StartDateType;
+            var tempEnd = command == "Entry Report" ? overview.OverTransactionsModel.EndDateEntry : command == "Vendor Report" ? overview.OverTransactionsModel.EndDateVendor : command == "Category Report" ? overview.OverTransactionsModel.EndDateCategory : overview.OverTransactionsModel.EndDateType;
+
+            ModelState.Clear();
+
+            overview.OverTransactionsModel = new TransactionsModel();
+            overview.OverUsersModel = new UsersModel();
+            overview.OverVendorsModel = new VendorsModel();
+            overview.OverCategoriesModel = new CategoriesModel();
+            overview.CompletedRequest = new List<string>();
+
+            overview.OverTransactionsModel.AllTransActions = tempAllTrans;
+            overview.OverUsersModel.UserName = tempUser;
+            overview.OverUsersModel.UserId = tempId;
+            overview.OverUsersModel.Balance = tempBal;
+            overview.OverVendorsModel.GetAllVendorsSelect(overview.OverUsersModel.UserId);
+            overview.OverVendorsModel.AllVendorsSelect = overview.OverVendorsModel.AllVendorsSelect.Where(x => x.Text != "*ADD NEW VENDOR*");
+            overview.OverCategoriesModel.GetAllCategoriesSelect(overview.OverUsersModel.UserId);
+            overview.OverCategoriesModel.AllCategoriesSelect = overview.OverCategoriesModel.AllCategoriesSelect.Where(x => x.Text != "*ADD NEW CATEGORY*");
+            overview.CompletedRequest.Add($"{reportType[command][2]} Report");
+            overview.CompletedRequest.Add($"{reportType[command][0]}: {reportType[command][1]}");
+            overview.CompletedRequest.Add($"Dates: Between {tempStart.ToString("MM-dd-yyyy")} and {tempEnd.ToString("MM-dd-yyyy")}");
+
+            return View("Reports", overview);
         }
 
+        //Tab on Overview Page: Profile
+        public ActionResult Profile(string userName)
+        {
+            UsersModel user = new UsersModel();
+            var userInfo = user.GetUser(userName);
+            user.UserId = userInfo.First().UserId;
+            user.UserName = userInfo.First().UserName;
+            user.Balance = userInfo.First().Balance.ToString("0.00");
+            user.FirstName = userInfo.First().FirstName;
+            user.LastName = userInfo.First().LastName;
+            user.Password = userInfo.First().Password;
+            user.SecurityAnswer = userInfo.First().SecurityAnswer;
 
+            OverviewViewModel over = new OverviewViewModel();
+            over.OverUsersModel = user;
 
+            return View(over);
+        }
 
-        //Tab on Overview Page: Activity Entry, back to Login Page
+        //Change Password - Profile Page
+        public ActionResult ChangePassword(OverviewViewModel overview)
+        {
+            return View(overview);
+        }
+
+        //Submit Password on Change Password Page
+        public ActionResult FormChangePassword(OverviewViewModel overview)
+        {
+            UsersModel user = new UsersModel();
+            var userInfo = user.GetUser(overview.OverUsersModel.UserName);
+
+            overview.OverUsersModel.UpdatePassword(overview.OverUsersModel.UserId, overview.OverUsersModel.Password, userInfo.First().Password);
+            if (overview.OverUsersModel.Message == "Your password has successfully been updated.")
+            {
+                overview.OverUsersModel.Password = "";
+            }
+            return View("ChangePassword", overview);
+        }
+
+        //Tab on Overview Page: Logout, back to Login Page
         public ActionResult Logout()
         {
             return RedirectToAction("EntryIndex", "Entry");

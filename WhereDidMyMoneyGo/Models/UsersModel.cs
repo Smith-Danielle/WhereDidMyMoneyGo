@@ -149,7 +149,56 @@ namespace WhereDidMyMoneyGo.Models
             {
                 Balance = (balance - transAmount).ToString("0.00");
             }
-            RepoUser.UpdateBalance(userId, Convert.ToDouble(Balance));
+            RepoUser.UpdateUserBalance(userId, Convert.ToDouble(Balance));
+        }
+
+        //Update User Password
+        public void UpdatePassword(int userId, string passwordNew, string passwordOld)
+        {
+            if (string.IsNullOrEmpty(passwordNew))
+            {
+                Message = "Please fill in the corresponding field to create a new password.";
+            }
+            else
+            {
+                if (passwordNew != passwordOld)
+                {
+                    if (passwordNew.Length >= 10 &&
+                        passwordNew.Where(x => char.IsLetter(x)).Where(x => char.IsUpper(x)).Count() >= 1 &&
+                        passwordNew.Where(x => char.IsLetter(x)).Where(x => char.IsLower(x)).Count() >= 1 &&
+                        passwordNew.Where(x => char.IsNumber(x)).Count() >= 1)
+                    {
+                        RepoUser.UpdateUserPassword(userId, passwordNew);
+                        Message = "Your password has successfully been updated.";
+                    }
+                    else
+                    {
+                        Message = "Password must contain at least 10 characters, 1 uppercase letter, 1 lowercase letter, 1 number.";
+                    }
+                }
+                else
+                {
+                    Message = "Please enter a password that is different from your current password.";
+                }
+            }
+        }
+
+        //Update User Security Answer
+        public void UpdateSecurityAnswer(int userId, string secureAnsNew, string secureAnsOld)
+        {
+            if (string.IsNullOrEmpty(secureAnsNew))
+            {
+                Message = "Please fill in the corresponding field to update security answer.";
+            }
+            if (secureAnsNew == secureAnsOld)
+            {
+                Message = "Please enter a security answer that is different from your current security answer.";
+            }
+            else
+            {
+                RepoUser.UpdateUserSecuirtyAnswer(userId, secureAnsNew);
+                Message = "Your security answer has successfully been updated.";
+            }
         }
     }
 }

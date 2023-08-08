@@ -29,10 +29,24 @@ namespace WhereDidMyMoneyGo.Models
         }
 
         //Update record balance
-        public void UpdateBalance(int userId, double balance)
+        public void UpdateUserBalance(int userId, double balance)
         {
             _connection.Execute("Update Users Set Balance = @balance Where UserId = @userId;",
             new { userId = userId, balance = balance});
+        }
+
+        //Update record password
+        public void UpdateUserPassword(int userId, string password)
+        {
+            _connection.Execute("Update Users Set Password = @password Where UserId = @userId;",
+            new { userId = userId, password = password });
+        }
+
+        //Update record security answer
+        public void UpdateUserSecuirtyAnswer(int userId, string secureAns)
+        {
+            _connection.Execute("Update Users Set SecurityAnswer = @secureAns Where UserId = @userId;",
+            new { userId = userId, secureAns = secureAns });
         }
     }
 }

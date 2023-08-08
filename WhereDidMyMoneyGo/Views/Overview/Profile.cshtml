@@ -1,0 +1,113 @@
+﻿@*
+    user Profile. Review personal info, update password, update security answer.
+*@
+@model OverviewViewModel
+
+<div style="padding-top: 30px; padding-bottom: 40px">
+
+    <h2 style="font-weight:bold;"><u>Profile</u></h2>
+    <br />
+
+    @{
+        if (Model.OverUsersModel.Balance.Contains('-'))
+        {
+            <h3 style="color:red;"><i>Balance: -$@Model.OverUsersModel.Balance.Substring(1)</i></h3>
+        }
+        else
+        {
+            <h3><i>Balance: $@Model.OverUsersModel.Balance</i></h3>
+        }
+    }
+    <br />
+    <br />
+    <br />
+
+    <div class="text-center">
+        <div style="border-style: double; width: 500px; margin: 0 auto">
+
+            <table style="border-collapse: separate; text-align: left;" cellpadding="20" cellspacing="0">
+                <tr>
+                    <th>Username</th>
+                    <td>@Html.TextBoxFor(m => m.OverUsersModel.UserName, new { style = "width:330px;", @readonly = true })</td>
+                </tr>
+                <tr>
+                    <th style="padding-bottom:0;">Password</th>
+                    @{
+                        string starPassword = "";
+                        foreach (var item in Model.OverUsersModel.Password)
+                        {
+                            starPassword += '*';
+                        }
+                        <td style="padding-bottom:0;"><input id="password" style="width:330px;" type="text" value="@starPassword" readonly /></td>
+                        <td hidden><@Html.TextBoxFor(m => m.OverUsersModel.Password) /></td>
+                    }
+                </tr>
+                <tr>
+                    <th style="padding-top:0; padding-bottom:0;">&nbsp;</th>
+                    <td style="padding-top:0; padding-bottom:0; padding-left: 278px;"><input onclick="showHide()" style=" font-size: 10px; font-weight: bold; background-color: #e7e7e7;" type="button" value="Show/Hide" /></td>
+                </tr>
+                <tr>
+                    <th>First Name</th>
+                    <td>@Html.TextBoxFor(m => m.OverUsersModel.FirstName, new { style = "width:330px;", @readonly = true })</td>
+                </tr>
+                <tr>
+                    <th>Last Name</th>
+                    <td>@Html.TextBoxFor(m => m.OverUsersModel.LastName, new { style = "width:330px;", @readonly = true })</td>
+                </tr>
+                <tr>
+                    <th>Security Question</th>
+                    <td align="left" style="font-size:small;">Most memorable or favorite childhood destination. (place, vacation, field trip, etc.)</td>
+                </tr>
+                <tr>
+                    <th>Security Answer</th>
+                    <td>@Html.TextBoxFor(m => m.OverUsersModel.SecurityAnswer, new { style = "width:330px;", @readonly = true })</td>
+                </tr>
+            </table>
+            <br />
+            <br />
+            <table style="border-collapse: separate; text-align: left;" cellpadding="20" cellspacing="0">
+                <tr>
+                    @using (Html.BeginForm("ChangePassword", "Overview", FormMethod.Get))
+                    {
+                        @Html.HiddenFor(m => m.OverUsersModel.UserId);
+                        @Html.HiddenFor(m => m.OverUsersModel.UserName);
+                        @Html.HiddenFor(m => m.OverUsersModel.Balance);
+                        <td><input style="width: 200px" type="submit" value="Change Password" /></td>
+                    }
+                    @using (Html.BeginForm("ChangeSecurityAnswer", "Overview", FormMethod.Get))
+                    {
+                        @Html.HiddenFor(m => m.OverUsersModel.UserId);
+                        @Html.HiddenFor(m => m.OverUsersModel.UserName);
+                        @Html.HiddenFor(m => m.OverUsersModel.Balance);
+                        <td style="padding-left:30px;"><input style="width: 200px" type="submit" value="Change Security Answer" /></td>
+                    }
+                </tr>
+            </table>
+        </div>
+    </div>
+
+
+</div>
+
+<script type="text/javascript">
+
+
+    function showHide() {
+
+        var id = '@Html.IdFor(x => x.OverUsersModel.Password)';
+        var text = document.getElementById(id).value;
+
+        var star = "";
+        for (let i in text) {
+            star += "*";
+        }
+
+        if (document.getElementById("password").value == text) {
+            document.getElementById("password").value = star;
+        }
+        else {
+            document.getElementById("password").value = text;
+        }
+    }
+
+</script>

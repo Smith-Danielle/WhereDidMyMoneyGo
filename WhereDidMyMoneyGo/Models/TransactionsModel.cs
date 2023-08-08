@@ -179,7 +179,7 @@ namespace WhereDidMyMoneyGo.Models
 
         public void EntryReport(int userId, string group, DateTime start, DateTime end)
         {
-            var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end).OrderBy(x => Convert.ToDateTime(x.TransactionDate));
+            var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end).OrderBy(x => Convert.ToDateTime(x.TransactionDate)).ThenBy(x => x.VendorName).ThenBy(x => x.CategoryName).ThenBy(x => x.TransactionType).ThenBy(x => x.TransactionAmount);
             var transTotal = Math.Round(trans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - trans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
             var allTrans = trans.ToList();
 
@@ -244,14 +244,156 @@ namespace WhereDidMyMoneyGo.Models
 
         public void VendorReport(int userId, string vendor, DateTime start, DateTime end)
         {
+            var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end && x.VendorName != "User Adjustment").OrderBy(x => x.VendorName).ThenBy(x => Convert.ToDateTime(x.TransactionDate)).ThenBy(x => x.CategoryName).ThenBy(x => x.TransactionType).ThenBy(x => x.TransactionAmount);
+            
+            if (vendor == "ALL VENDORS")
+            {
+                var vendors = trans.GroupBy(x => x.VendorName).Select(x => x.Key).Select(x => new
+                {
+                    Vendor = x,
+                    Count = trans.Where(y => y.VendorName == x).Count(),
+                    Total = Math.Round(trans.Where(y => y.VendorName == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() - trans.Where(y => y.VendorName == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2)
+                }).ToList();
+                var allTrans = trans.ToList();
+                var transDates = trans.Select(x => x.TransactionDate).ToList();
+                int count = 0;
+                for (int i = 0; i < vendors.Count(); i++)
+                {
+                    transDates.Insert(count + vendors[i].Count, $"({i})");
+                    count += vendors[i].Count + 1;
+                    allTrans.Insert(transDates.IndexOf($"({i})"), new TransactionsTable { TransactionAmount = vendors[i].Total });
+                }
+
+                var transTotal = Math.Round(trans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - trans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
+                allTrans.Add(new TransactionsTable { TransactionDate = "Report Total", TransactionAmount = transTotal });
+                AllTransActions = allTrans.Select(x => x);
+            }
+
+            else
+            {
+                var specificTrans = trans.Where(x => x.VendorName == vendor).ToList();
+                var specificTotal = Math.Round(specificTrans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - specificTrans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
+                specificTrans.Add(new TransactionsTable { TransactionDate = "Report Total", TransactionAmount = specificTotal });
+                AllTransActions = specificTrans.Select(x => x);
+            }
         }
 
         public void CategoryReport(int userId, string category, DateTime start, DateTime end)
         {
+            var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end && x.CategoryName != "Balance Adjustment").OrderBy(x => x.CategoryName).ThenBy(x => Convert.ToDateTime(x.TransactionDate)).ThenBy(x => x.VendorName).ThenBy(x => x.TransactionType).ThenBy(x => x.TransactionAmount);
+
+            if (category == "ALL CATEGORIES")
+            {
+                var categories = trans.GroupBy(x => x.CategoryName).Select(x => x.Key).Select(x => new
+                {
+                    Category = x,
+                    Count = trans.Where(y => y.CategoryName == x).Count(),
+                    Total = Math.Round(trans.Where(y => y.CategoryName == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() - trans.Where(y => y.CategoryName == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2)
+                }).ToList();
+                var allTrans = trans.ToList();
+                var transDates = trans.Select(x => x.TransactionDate).ToList();
+                int count = 0;
+                for (int i = 0; i < categories.Count(); i++)
+                {
+                    transDates.Insert(count + categories[i].Count, $"({i})");
+                    count += categories[i].Count + 1;
+                    allTrans.Insert(transDates.IndexOf($"({i})"), new TransactionsTable { TransactionAmount = categories[i].Total });
+                }
+
+                var transTotal = Math.Round(trans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - trans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
+                allTrans.Add(new TransactionsTable { TransactionDate = "Report Total", TransactionAmount = transTotal });
+                AllTransActions = allTrans.Select(x => x);
+            }
+
+            else
+            {
+                var specificTrans = trans.Where(x => x.CategoryName == category).ToList();
+                var specificTotal = Math.Round(specificTrans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - specificTrans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
+                specificTrans.Add(new TransactionsTable { TransactionDate = "Report Total", TransactionAmount = specificTotal });
+                AllTransActions = specificTrans.Select(x => x);
+            }
         }
 
         public void TypeReport(int userId, string type, DateTime start, DateTime end)
         {
+            var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end && x.TransactionType != "Balance Adjustment").OrderBy(x => x.TransactionType).ThenBy(x => Convert.ToDateTime(x.TransactionDate)).ThenBy(x => x.VendorName).ThenBy(x => x.CategoryName).ThenBy(x => x.TransactionAmount);
+
+            if (type == "ALL ACTIVITY TYPES")
+            {
+                var types = trans.GroupBy(x => x.TransactionType).Select(x => x.Key).Select(x => new
+                {
+                    Type = x,
+                    Count = trans.Where(y => y.TransactionType == x).Count(),
+                    Total = Math.Round(trans.Where(y => y.TransactionType == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() - trans.Where(y => y.TransactionType == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2)
+                }).ToList();
+                var allTrans = trans.ToList();
+                var transDates = trans.Select(x => x.TransactionDate).ToList();
+                int count = 0;
+                for (int i = 0; i < types.Count(); i++)
+                {
+                    transDates.Insert(count + types[i].Count, $"({i})");
+                    count += types[i].Count + 1;
+                    allTrans.Insert(transDates.IndexOf($"({i})"), new TransactionsTable { TransactionAmount = types[i].Total });
+                }
+
+                var transTotal = Math.Round(trans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - trans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
+                allTrans.Add(new TransactionsTable { TransactionDate = "Report Total", TransactionAmount = transTotal });
+                AllTransActions = allTrans.Select(x => x);
+            }
+
+            else if (type == "Revenue & Expense")
+            {
+                var revExpTrans = trans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Expense").ToList();
+                var types = revExpTrans.GroupBy(x => x.TransactionType).Select(x => x.Key).Select(x => new
+                {
+                    Type = x,
+                    Count = revExpTrans.Where(y => y.TransactionType == x).Count(),
+                    Total = Math.Round(revExpTrans.Where(y => y.TransactionType == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() - revExpTrans.Where(y => y.TransactionType == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2)
+                }).ToList();
+                var transDates = revExpTrans.Select(x => x.TransactionDate).ToList();
+                int count = 0;
+                for (int i = 0; i < types.Count(); i++)
+                {
+                    transDates.Insert(count + types[i].Count, $"({i})");
+                    count += types[i].Count + 1;
+                    revExpTrans.Insert(transDates.IndexOf($"({i})"), new TransactionsTable { TransactionAmount = types[i].Total });
+                }
+
+                var revExpTotal = Math.Round(revExpTrans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - revExpTrans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
+                revExpTrans.Add(new TransactionsTable { TransactionDate = "Report Total", TransactionAmount = revExpTotal });
+                AllTransActions = revExpTrans.Select(x => x);
+            }
+
+            else if (type == "Adjustment Increase & Adjustment Decrease")
+            {
+                var adjustTrans = trans.Where(x => x.TransactionType == "Adjustment Increase" || x.TransactionType == "Adjustment Decrease").ToList();
+                var types = adjustTrans.GroupBy(x => x.TransactionType).Select(x => x.Key).Select(x => new
+                {
+                    Type = x,
+                    Count = adjustTrans.Where(y => y.TransactionType == x).Count(),
+                    Total = Math.Round(adjustTrans.Where(y => y.TransactionType == x).Where(y => y.TransactionType == "Revenue" || y.TransactionType == "Adjustment Increase").Select(y => y.TransactionAmount).Sum() - adjustTrans.Where(y => y.TransactionType == x).Where(y => y.TransactionType == "Expense" || y.TransactionType == "Adjustment Decrease").Select(y => y.TransactionAmount).Sum(), 2)
+                }).ToList();
+                var transDates = adjustTrans.Select(x => x.TransactionDate).ToList();
+                int count = 0;
+                for (int i = 0; i < types.Count(); i++)
+                {
+                    transDates.Insert(count + types[i].Count, $"({i})");
+                    count += types[i].Count + 1;
+                    adjustTrans.Insert(transDates.IndexOf($"({i})"), new TransactionsTable { TransactionAmount = types[i].Total });
+                }
+
+                var adjustTotal = Math.Round(adjustTrans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - adjustTrans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
+                adjustTrans.Add(new TransactionsTable { TransactionDate = "Report Total", TransactionAmount = adjustTotal });
+                AllTransActions = adjustTrans.Select(x => x);
+            }
+
+            else
+            {
+                var specificTrans = trans.Where(x => x.TransactionType == type).ToList();
+                var specificTotal = Math.Round(specificTrans.Where(x => x.TransactionType == "Revenue" || x.TransactionType == "Adjustment Increase").Select(x => x.TransactionAmount).Sum() - specificTrans.Where(x => x.TransactionType == "Expense" || x.TransactionType == "Adjustment Decrease").Select(x => x.TransactionAmount).Sum(), 2);
+                specificTrans.Add(new TransactionsTable { TransactionDate = "Report Total", TransactionAmount = specificTotal });
+                AllTransActions = specificTrans.Select(x => x);
+            }
         }
     }
 }
