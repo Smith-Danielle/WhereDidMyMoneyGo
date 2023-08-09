@@ -602,15 +602,59 @@ namespace WhereDidMyMoneyGo.Controllers
         //Submit Password on Change Password Page
         public ActionResult FormChangePassword(OverviewViewModel overview)
         {
-            UsersModel user = new UsersModel();
-            var userInfo = user.GetUser(overview.OverUsersModel.UserName);
+            var userInfo = overview.OverUsersModel.GetUser(overview.OverUsersModel.UserName);
 
             overview.OverUsersModel.UpdatePassword(overview.OverUsersModel.UserId, overview.OverUsersModel.Password, userInfo.First().Password);
             if (overview.OverUsersModel.Message == "Your password has successfully been updated.")
             {
-                overview.OverUsersModel.Password = "";
+                //to clear password field on form on success
+                var tempUser = overview.OverUsersModel.UserName;
+                var tempId = overview.OverUsersModel.UserId;
+                var tempBal = overview.OverUsersModel.Balance;
+                var tempMess = overview.OverUsersModel.Message;
+
+                ModelState.Clear();
+
+                overview.OverUsersModel = new UsersModel();
+
+                overview.OverUsersModel.UserName = tempUser;
+                overview.OverUsersModel.UserId = tempId;
+                overview.OverUsersModel.Balance = tempBal;
+                overview.OverUsersModel.Message = tempMess;
             }
             return View("ChangePassword", overview);
+        }
+
+        //Change Security Answer - Profile Page
+        public ActionResult ChangeSecurityAnswer(OverviewViewModel overview)
+        {
+            return View(overview);
+        }
+
+        //Submit Password on Change Security Answer Page
+        public ActionResult FormChangeSecureAns(OverviewViewModel overview)
+        {
+            var userInfo = overview.OverUsersModel.GetUser(overview.OverUsersModel.UserName);
+
+            overview.OverUsersModel.UpdateSecurityAnswer(overview.OverUsersModel.UserId, overview.OverUsersModel.SecurityAnswer, userInfo.First().SecurityAnswer);
+            if (overview.OverUsersModel.Message == "Your security answer has successfully been updated.")
+            {
+                //to clear password field on form on success
+                var tempUser = overview.OverUsersModel.UserName;
+                var tempId = overview.OverUsersModel.UserId;
+                var tempBal = overview.OverUsersModel.Balance;
+                var tempMess = overview.OverUsersModel.Message;
+
+                ModelState.Clear();
+
+                overview.OverUsersModel = new UsersModel();
+
+                overview.OverUsersModel.UserName = tempUser;
+                overview.OverUsersModel.UserId = tempId;
+                overview.OverUsersModel.Balance = tempBal;
+                overview.OverUsersModel.Message = tempMess;
+            }
+            return View("ChangeSecurityAnswer", overview);
         }
 
         //Tab on Overview Page: Logout, back to Login Page

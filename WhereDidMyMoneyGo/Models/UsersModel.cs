@@ -190,14 +190,17 @@ namespace WhereDidMyMoneyGo.Models
             {
                 Message = "Please fill in the corresponding field to update security answer.";
             }
-            if (secureAnsNew == secureAnsOld)
-            {
-                Message = "Please enter a security answer that is different from your current security answer.";
-            }
             else
             {
-                RepoUser.UpdateUserSecuirtyAnswer(userId, secureAnsNew);
-                Message = "Your security answer has successfully been updated.";
+                if (secureAnsNew == secureAnsOld)
+                {
+                    Message = "Please enter a security answer that is different from your current security answer.";
+                }
+                else
+                {
+                    RepoUser.UpdateUserSecuirtyAnswer(userId, secureAnsNew);
+                    Message = "Your security answer has successfully been updated.";
+                }
             }
         }
     }

@@ -176,7 +176,7 @@ namespace WhereDidMyMoneyGo.Models
             AllTransActions = RepoTrans.GetUserTrans(userId);
         }
 
-
+        //Activty Entry Report for Report Module
         public void EntryReport(int userId, string group, DateTime start, DateTime end)
         {
             var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end).OrderBy(x => Convert.ToDateTime(x.TransactionDate)).ThenBy(x => x.VendorName).ThenBy(x => x.CategoryName).ThenBy(x => x.TransactionType).ThenBy(x => x.TransactionAmount);
@@ -242,6 +242,7 @@ namespace WhereDidMyMoneyGo.Models
             AllTransActions = allTrans.Select(x => x);
         }
 
+        //Vendor Report for Report Module
         public void VendorReport(int userId, string vendor, DateTime start, DateTime end)
         {
             var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end && x.VendorName != "User Adjustment").OrderBy(x => x.VendorName).ThenBy(x => Convert.ToDateTime(x.TransactionDate)).ThenBy(x => x.CategoryName).ThenBy(x => x.TransactionType).ThenBy(x => x.TransactionAmount);
@@ -278,6 +279,7 @@ namespace WhereDidMyMoneyGo.Models
             }
         }
 
+        //Entry Category for Report Module
         public void CategoryReport(int userId, string category, DateTime start, DateTime end)
         {
             var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end && x.CategoryName != "Balance Adjustment").OrderBy(x => x.CategoryName).ThenBy(x => Convert.ToDateTime(x.TransactionDate)).ThenBy(x => x.VendorName).ThenBy(x => x.TransactionType).ThenBy(x => x.TransactionAmount);
@@ -314,6 +316,7 @@ namespace WhereDidMyMoneyGo.Models
             }
         }
 
+        //Activty Type Report for Report Module
         public void TypeReport(int userId, string type, DateTime start, DateTime end)
         {
             var trans = RepoTrans.GetUserTrans(userId).Where(x => Convert.ToDateTime(x.TransactionDate) >= start && Convert.ToDateTime(x.TransactionDate) <= end && x.TransactionType != "Balance Adjustment").OrderBy(x => x.TransactionType).ThenBy(x => Convert.ToDateTime(x.TransactionDate)).ThenBy(x => x.VendorName).ThenBy(x => x.CategoryName).ThenBy(x => x.TransactionAmount);

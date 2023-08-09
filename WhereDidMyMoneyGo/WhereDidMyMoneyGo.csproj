@@ -26,5 +26,9 @@
     <Folder Include="Views\Entry\" />
     <Folder Include="Views\Overview\" />
     <Folder Include="ViewModels\" />
+    <Folder Include="wwwroot\Images\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Content Remove="wwwroot\Images\" />
   </ItemGroup>
 </Project>

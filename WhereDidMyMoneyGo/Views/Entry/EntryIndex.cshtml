@@ -3,10 +3,17 @@
 *@
 @model UsersModel
 
-<div class="text-center" style="padding-top: 95px;">
-    <h1>Where Did My Money Go?</h1>
+<div style="padding-top: 95px; padding-bottom: 95px; width: 650px; margin: 0 auto; text-align:center;">
+    <h1 style="font-size:60px;">Where Did My Money Go</h1>
 
     <br />
+    <br />
+
+    <h5 style="text-align:left;">Record and track your money activity. Make adjustments as necessary to ensure your balances are always accurate. View and update vendors and activity categories. Run a variety of different reports based on dates, transactions, adjustments, vendors, categories, and more.</h5>
+    <br />
+    <br />
+    <h5> Login or Create Login to get started!</h5>
+
     <br />
     <br />
 
@@ -32,7 +39,7 @@
 
         <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
             <tr>
-                <td>@Html.TextBoxFor(m => m.Message, new { @readonly = "readonly", style = "color:red; border:none; width:300px; font-weight:bold;" })</td>
+                <td>@Html.TextBoxFor(m => m.Message, new { @readonly = "readonly", style = "color:red; border:none; width:300px; font-weight:bold; background-color: transparent;" })</td>
             </tr>
         </table>
 

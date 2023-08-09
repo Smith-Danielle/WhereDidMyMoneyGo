@@ -1,11 +1,11 @@
 ﻿@*
-    Change password
+    Change security answer.
 *@
 @model OverviewViewModel
 
 <div style="padding-top: 30px; padding-bottom: 40px">
 
-    <h2 style="font-weight:bold;"><u>Profile - Change Password</u></h2>
+    <h2 style="font-weight:bold;"><u>Profile - Change Security Answer</u></h2>
     <br />
 
     @{
@@ -26,16 +26,22 @@
         <div style="border-style: double; width: 380px; margin: 0 auto">
 
             <table style="border-collapse: separate; text-align: left;" cellpadding="20" cellspacing="0">
-                @using (Html.BeginForm("FormChangePassword", "Overview", FormMethod.Get))
+                @using (Html.BeginForm("FormChangeSecureAns", "Overview", FormMethod.Get))
                 {
                     @Html.HiddenFor(m => m.OverUsersModel.UserId);
                     @Html.HiddenFor(m => m.OverUsersModel.UserName);
                     @Html.HiddenFor(m => m.OverUsersModel.Balance);
                     <tr>
-                        <th>Enter New Password</th>
+                        <th style="padding-bottom: 0;">Security Question</th>
                     </tr>
                     <tr>
-                        <th>@Html.TextBoxFor(m => m.OverUsersModel.Password, new { style = "width:330px;" })</th>
+                        <td align="left" style="font-size: small;">Most memorable or favorite childhood destination. (place, vacation, field trip, etc.)</td>
+                    </tr>
+                    <tr>
+                        <th style="padding-bottom: 0;">Enter New Security Answer</th>
+                    </tr>
+                    <tr>
+                        <th>@Html.TextBoxFor(m => m.OverUsersModel.SecurityAnswer, new { style = "width:330px;" })</th>
                     </tr>
                     <tr>
                         <td style="padding-left: 250px; padding-top: 0;"><input style="width: 100px" type="submit" value="Submit" /></td>
@@ -46,7 +52,7 @@
             <table style="border-collapse: separate; text-align: left;" cellpadding="20" cellspacing="0">
                 <tr>
                     @{
-                        if (Model.OverUsersModel.Message == "Your password has successfully been updated.")
+                        if (Model.OverUsersModel.Message == "Your security answer has successfully been updated.")
                         {
                             <td readonly style="color: green; border: none; font-weight: bold;">@Model.OverUsersModel.Message</td>
                         }
