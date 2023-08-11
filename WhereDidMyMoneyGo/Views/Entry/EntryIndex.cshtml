@@ -3,59 +3,62 @@
 *@
 @model UsersModel
 
-<div style="padding-top: 95px; padding-bottom: 95px; width: 650px; margin: 0 auto; text-align:center;">
-    <h1 style="font-size:60px;">Where Did My Money Go</h1>
+    <body style="background-image: url(../Images/ImageHome.png); background-repeat: no-repeat; background-attachment: scroll; background-position: center; background-size: cover;">
+        <div style="padding-top: 105px; padding-bottom: 105px; width: 650px; text-align: center; margin: 0 auto;">
+            <h1 style="font-size:60px;">Where Did My Money Go</h1>
 
-    <br />
-    <br />
+            <br />
+            <br />
 
-    <h5 style="text-align:left;">Record and track your money activity. Make adjustments as necessary to ensure your balances are always accurate. View and update vendors and activity categories. Run a variety of different reports based on dates, transactions, adjustments, vendors, categories, and more.</h5>
-    <br />
-    <br />
-    <h5> Login or Create Login to get started!</h5>
+            <h5 style="text-align:left;">Record and track your money activity. Make adjustments as necessary to ensure your balances are always accurate. View and update vendors and activity categories. Run a variety of different reports based on dates, transactions, adjustments, vendors, categories, and more.</h5>
+            <br />
+            <br />
+            <h5> Login or Create Login to get started!</h5>
 
-    <br />
-    <br />
+            <br />
+            <br />
 
-    <div style="border-style: solid; width: 330px; margin: 0 auto">
+            <div style="border-style: solid; width: 330px; margin: 0 auto">
 
-        @using (Html.BeginForm("FormLogin", "Entry", FormMethod.Get))
-        {
-            <table style="border-collapse: separate; padding-top: 12px;" cellpadding="10" cellspacing="0">
-                <tr>
-                    <th>Username</th>
-                    <td>@Html.TextBoxFor(m => m.UserName)</td>
-                </tr>
-                <tr>
-                    <th>Password</th>
-                    <td>@Html.TextBoxFor(m => m.Password)</td>
-                </tr>
-                <tr>
-                    <td>&nbsp;</td>
-                    <td style="text-align: right;"><input type="submit" value="Login" /></td>
-                </tr>
-            </table>
-        }
-
-        <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
-            <tr>
-                <td>@Html.TextBoxFor(m => m.Message, new { @readonly = "readonly", style = "color:red; border:none; width:300px; font-weight:bold; background-color: transparent;" })</td>
-            </tr>
-        </table>
-
-        <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
-            <tr>
-                @using (Html.BeginForm("ForgotPassword", "Entry", FormMethod.Get))
+                @using (Html.BeginForm("FormLogin", "Entry", FormMethod.Get))
                 {
-                    <td><input type="submit" value="Forgot Password" /></td>
+                    <table style="border-collapse: separate; padding-top: 12px;" cellpadding="10" cellspacing="0">
+                        <tr>
+                            <th>Username</th>
+                            <td>@Html.TextBoxFor(m => m.UserName)</td>
+                        </tr>
+                        <tr>
+                            <th>Password</th>
+                            <td>@Html.TextBoxFor(m => m.Password)</td>
+                        </tr>
+                        <tr>
+                            <td>&nbsp;</td>
+                            <td style="text-align: right;"><input type="submit" value="Login" /></td>
+                        </tr>
+                    </table>
                 }
-                @using (Html.BeginForm("CreateLogin", "Entry", FormMethod.Get))
-                {
-                    <td><input type="submit" value="Create Login" /></td>
-                }
-            </tr>
-        </table>
+
+                <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
+                    <tr>
+                        <td>@Html.TextBoxFor(m => m.Message, new { @readonly = "readonly", style = "color:red; border:none; width:300px; font-weight:bold; background-color: transparent;" })</td>
+                    </tr>
+                </table>
+
+                <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="10" cellspacing="0">
+                    <tr>
+                        @using (Html.BeginForm("ForgotPassword", "Entry", FormMethod.Get))
+                        {
+                            <td><input type="submit" value="Forgot Password" /></td>
+                        }
+                        @using (Html.BeginForm("CreateLogin", "Entry", FormMethod.Get))
+                        {
+                            <td><input type="submit" value="Create Login" /></td>
+                        }
+                    </tr>
+                </table>
 
 
-    </div>
-</div>
+            </div>
+        </div>
+        
+    </body>

@@ -3,7 +3,7 @@
 *@
 @model UsersModel
 
-<div class="text-center" style="padding-top: 95px; padding-bottom: 105px;">
+<div class="text-center" style="padding-top: 105px; padding-bottom: 105px;">
 
     <div style="width: 490px; margin: 0 auto">
         <table cellpadding="10" cellspacing="0">
@@ -54,7 +54,16 @@
         }
         <table style="border-collapse: separate; border-spacing: 12px;" cellpadding="15" cellspacing="0">
             <tr>
-                <td readonly style="color: red; border: none; font-weight: bold;">@Model.Message</td>
+                @{
+                    if (Model.Message == "Login successfully created.")
+                    {
+                        <td readonly style="color: green; border: none; font-weight: bold;">@Model.Message</td>
+                    }
+                    else
+                    {
+                        <td readonly style="color: red; border: none; font-weight: bold;">@Model.Message</td>
+                    }
+                }
             </tr>
         </table>
 
@@ -69,4 +78,12 @@
 
 
     </div>
+</div>
+<div>
+    @section customFooter
+        {
+        <div style="text-align: center; background-image: url(../Images/ImageGreenTeal.png); background-repeat: no-repeat; background-attachment: scroll; background-position: center; background-size: cover;">
+            &copy; 2023 - Where Did My Money Go by Danielle Smith
+        </div>
+    }
 </div>

@@ -131,8 +131,8 @@
             ]);
 
         var chartType = new CanvasJS.Chart("chartContainerType", {
-            colorSet: "grayShades",
-            //theme: "light2",
+            //colorSet: "grayShades",
+            theme: "light2",
             //animationEnabled: true,
             title: {
                 text: currentYear + " Activity Summary",
@@ -162,7 +162,8 @@
         chartType.render();
 
         var chartVendor = new CanvasJS.Chart("chartContainerVendor", {
-            colorSet: "grayShades",
+            //colorSet: "grayShades",
+            theme: "light2",
             title: {
                 text: "Vendors",
                 horizontalAlign: "right",
@@ -190,7 +191,8 @@
         chartVendor.render();
 
         var chartCategory = new CanvasJS.Chart("chartContainerCategory", {
-            colorSet: "grayShades",
+            //colorSet: "grayShades",
+            theme: "light2",
             title: {
                 text: "Categories",
                 horizontalAlign: "right",
@@ -246,7 +248,7 @@
             data: [
                 {
                     type: "column",
-                    color: "#707070",
+                    color: "#646da0",
                     dataPoints: @Html.Raw(ViewBag.DataPointsMonthDay),
                 }
             ]
@@ -280,7 +282,7 @@
             data: [
                 {
                     type: "column",
-                    color: "#707070",
+                    color: "#646da0",
                     dataPoints: @Html.Raw(ViewBag.DataPointsYearMonth),
                 }
             ]

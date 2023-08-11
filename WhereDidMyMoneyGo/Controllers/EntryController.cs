@@ -42,6 +42,13 @@ namespace WhereDidMyMoneyGo.Controllers
         public ActionResult FormForgotPass(UsersModel forgotUser)
         {
             forgotUser.GetPassword(forgotUser.UserName, forgotUser.SecurityAnswer);
+
+            //clear the form after retrieval
+            var tempMess = forgotUser.Message;
+            ModelState.Clear();
+            forgotUser = new UsersModel();
+            forgotUser.Message = tempMess;
+
             return View("ForgotPassword", forgotUser);
         }
 
@@ -56,7 +63,7 @@ namespace WhereDidMyMoneyGo.Controllers
         public ActionResult FormCreateLogin(UsersModel createUser)
         {
             createUser.CreateNewUser(createUser.UserName, createUser.Password, createUser.Balance, createUser.FirstName, createUser.LastName, createUser.SecurityAnswer);
-            if (createUser.Message == "Created.")
+            if (createUser.Message == "Login successfully created.")
             {
                 //add default vendor and cats to database for new user, then send them back to login
                 UsersModel user = new UsersModel();
@@ -68,12 +75,13 @@ namespace WhereDidMyMoneyGo.Controllers
                 CategoriesModel cat = new CategoriesModel();
                 cat.AddDefaultCats(userInfo.First().UserId);
 
-                return RedirectToAction("EntryIndex", "Entry");
+                //then clear the form on a success
+                var tempMess = createUser.Message;
+                ModelState.Clear();
+                createUser = new UsersModel();
+                createUser.Message = tempMess;
             }
-            else
-            {
-                return View("CreateLogin", createUser);
-            }
+            return View("CreateLogin", createUser);
         }
     }
 }

@@ -123,7 +123,7 @@ namespace WhereDidMyMoneyGo.Models
                         if (trimBalance.Any() && trimBalance.Where(x => x == '.').Count() <= 1 && string.Join("",trimBalance) == balance && decimalPlaces <= 2 && Convert.ToDouble(balance) != 0)
                         {
                             RepoUser.InsertNewUser(userName, password, Convert.ToDouble(balance), first, last, secureAns);
-                            Message = "Created.";
+                            Message = "Login successfully created.";
                         }
                         else
                         {
